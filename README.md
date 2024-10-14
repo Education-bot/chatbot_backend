@@ -8,6 +8,7 @@
 - [Техническое Задание - docs](https://docs.google.com/document/d/19xX0_TzsUeh8anVBXrrmLQitK8rfg4-bTEZgxep1v80/edit?tab=t.0#heading=h.smosd6gnwlpe)
 - [Записи со встреч - docs](https://docs.google.com/document/d/1x_vvz8FY1ag239mr-hvxhA8hoBHkD0Q-6FLbSfdC5pE/edit?tab=t.0#heading=h.7lmazdrmff9o)
 - [Исходный код - github](https://github.com/Education-bot/chatbot_backend)
+- [Инфра - Yandex Cloud](https://console.yandex.cloud/folders/b1gbae6rrn6e2e7l80pc)
 - [Доска - github](https://github.com/orgs/Education-bot/projects/2)
 
 
