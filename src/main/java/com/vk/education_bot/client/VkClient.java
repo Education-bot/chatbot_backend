@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -24,9 +26,10 @@ public class VkClient {
         try {
             vkApiClient
                     .messages()
-                    .sendUserIds(groupActor)
+                    .sendDeprecated(groupActor)
                     .userId(userId)
                     .message(message)
+                    .randomId(ThreadLocalRandom.current().nextInt())
                     .execute();
         } catch (ApiException | ClientException e) {
             log.error("Got error when send message to user {}", userId);
