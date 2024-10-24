@@ -19,7 +19,7 @@ public class CommonCallbackHandler extends CallbackApi {
     private final VkClient vkClient;
     private final BotProperties botProperties;
 
-    protected CommonCallbackHandler(BotProperties botProperties, VkClient vkClient) {
+    public CommonCallbackHandler(BotProperties botProperties, VkClient vkClient) {
         super(botProperties.confirmationCode());
         this.vkClient = vkClient;
         this.botProperties = botProperties;
