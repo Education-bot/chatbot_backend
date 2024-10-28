@@ -41,6 +41,21 @@ jobs:
           push: true
           tags: ${{ env.IMAGE_NAME }}
 
+      - name: Login to Yandex Cloud Container Registry
+        id: login-cr
+        uses: yc-actions/yc-cr-login@v1
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+
+      - name: Build, tag, and push image to Yandex Cloud Container Registry
+        env:
+          CR_REGISTRY: crprsopobhp5th379noj
+          CR_REPOSITORY: education-bot
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG .
+          docker push cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG
+
       - name: Deploy to yCloud
         id: deploy-coi
         uses: yc-actions/yc-coi-deploy@v2
