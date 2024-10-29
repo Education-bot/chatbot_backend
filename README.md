@@ -4,7 +4,7 @@
 ## Быстрые ссылки
 Документы:
 - [Ссылка на сгенерированный READ.ME](https://education-bot.github.io/chatbot_backend/) 
-- [План проекта - drawio](https://drive.google.com/file/d/1yB6PRcOnAkpoHRO6rqJ29qe1nWKtSAee/view?usp=sharing)
+- [План проекта - open Project](https://bot.openproject.com/projects/demo-project/gantt?query_props=%7B%22c%22%3A%5B%22id%22%2C%22type%22%2C%22subject%22%2C%22status%22%2C%22startDate%22%2C%22dueDate%22%2C%22duration%22%5D%2C%22hi%22%3Atrue%2C%22g%22%3A%22%22%2C%22is%22%3Atrue%2C%22tv%22%3Atrue%2C%22tll%22%3A%22%7B%5C%22left%5C%22%3A%5C%22startDate%5C%22%2C%5C%22right%5C%22%3A%5C%22dueDate%5C%22%2C%5C%22farRight%5C%22%3A%5C%22subject%5C%22%7D%22%2C%22tzl%22%3A%22auto%22%2C%22hla%22%3A%5B%22status%22%2C%22priority%22%2C%22dueDate%22%5D%2C%22t%22%3A%22startDate%3Aasc%22%2C%22f%22%3A%5B%7B%22n%22%3A%22status%22%2C%22o%22%3A%22*%22%2C%22v%22%3A%5B%5D%7D%5D%2C%22ts%22%3A%22PT0S%22%2C%22pp%22%3A20%2C%22pa%22%3A1%7D&name=all_open)
 - [Техническое Задание - docs](https://docs.google.com/document/d/19xX0_TzsUeh8anVBXrrmLQitK8rfg4-bTEZgxep1v80/edit?tab=t.0#heading=h.smosd6gnwlpe)
 - [Записи со встреч - docs](https://docs.google.com/document/d/1x_vvz8FY1ag239mr-hvxhA8hoBHkD0Q-6FLbSfdC5pE/edit?tab=t.0#heading=h.7lmazdrmff9o)
 - [Исходный код - github](https://github.com/Education-bot/chatbot_backend)
