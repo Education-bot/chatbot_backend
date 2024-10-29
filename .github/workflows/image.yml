@@ -33,18 +33,18 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          tags: ${{ env.IMAGE_NAME }}
+#      - name: Build and push Docker image
+#        uses: docker/build-push-action@v4
+#        with:
+#          context: .
+#          push: true
+#          tags: ${{ env.IMAGE_NAME }}
 
       - name: Login to Yandex Cloud Container Registry
         id: login-cr
-        uses: yc-actions/yc-cr-login@v1
+        uses: yc-actions/yc-cr-login@v2
         with:
-          yc-sa-json-credentials: t1.9euelZqKjpPIyJTGlpuOmZHLjJbHme3rnpWaiZmVkInGic6NmMmdjJidz47l9fd9GwFH-e9yC4Xd9fc9Sn5G-e9yC4XN5_XrnpWai5HOnZ6VjMfKmozJlpGXyZTv_MXrnpWai5HOnZ6VjMfKmozJlpGXyZQ.rYNVNJQAkWrpjhcOLWFl__hlhq_9eO06Ip0thoTNrWQ6EXbrdrXeUWhTmI_Fq4uqpXEhkOemWIWMNDY8EHvFBA
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
 
       - name: Build, tag, and push image to Yandex Cloud Container Registry
         env:
