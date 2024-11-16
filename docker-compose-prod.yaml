@@ -1,0 +1,9 @@
+version: '3.7'
+services:
+  vk-bot:
+    image: ${IMAGE_NAME}
+    restart: always
+    ports:
+      - 8080:8080
+
+
