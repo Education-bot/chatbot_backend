@@ -17,18 +17,6 @@ RUN gradle dependencies --no-daemon
 
 ################################################################################
 
-# Create a stage for building the application based on the stage with downloaded dependencies.
-FROM deps as package
-
-WORKDIR /build
-
-COPY src/ src/
-RUN gradle build --no-daemon
-RUN mv build/libs/*SNAPSHOT.jar app.jar
-
-
-################################################################################
-
 # Create a new stage for running the application that contains the minimal
 # runtime dependencies for the application.
 FROM eclipse-temurin:21-jre-jammy AS final
@@ -45,8 +33,8 @@ RUN adduser \
     appuser
 USER appuser
 
-# Copy the executable from the "package" stage.
-COPY --from=package /build/app.jar app.jar
+# Copy the executable artifact from the build context.
+COPY app.jar app.jar
 
 EXPOSE 8080
 
