@@ -13,17 +13,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+#      - name: Checkout repository
+#        uses: actions/checkout@v4
+#
+#      - name: Set up JDK 21
+#        uses: actions/setup-java@v4
+#        with:
+#          java-version: '21'
+#          distribution: 'temurin'
+#
+#      - name: Build with Gradle Wrapper
+#        run: ./gradlew build
 
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
         with:
-          java-version: '21'
-          distribution: 'temurin'
-
-      - name: Build with Gradle Wrapper
-        run: ./gradlew build
+          name: build-artifacts
+          path: build-artifacts/
 
       - name: Login to Yandex Cloud Container Registry
         id: login-cr
@@ -37,6 +43,7 @@ jobs:
           CR_REPOSITORY: education-bot
           IMAGE_TAG: ${{ github.sha }}
         run: |
+          COPY ./build-artifacts/*SNAPSHOT.jar ./app.jar
           docker build -t cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG .
           docker push cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG
 
