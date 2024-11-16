@@ -23,7 +23,7 @@ jobs:
       run: ./gradlew assemble
 
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: build-artifacts
         path: build/libs/education-bot-0.0.1-SNAPSHOT.jar
