@@ -7,8 +7,6 @@ on:
   pull_request:
     branches:
       - main
-env:
-  IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/education-bot:${{ github.sha }}
 
 jobs:
   build:
@@ -46,7 +44,9 @@ jobs:
         id: deploy-coi
         uses: yc-actions/yc-coi-deploy@v2
         env:
-          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+          CR_REGISTRY: crprsopobhp5th379noj
+          CR_REPOSITORY: education-bot
+          IMAGE_TAG: ${{ github.sha }}
         with:
           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
           folder-id: ${{ secrets.YC_FOLDER_ID }}
