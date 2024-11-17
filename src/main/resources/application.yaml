@@ -1,8 +1,19 @@
 spring:
   application:
     name: education-bot
+  liquibase:
+    change-log: classpath:/db/changelog/db.change-log-master.yml
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:5432/edu_bot
+    username: postgres
+    password: postgres
 
 properties:
-  confirmationCode:
-  groupId:
-  accessCode:
+  confirmationCode: ${CONFIRMATION_CODE}
+  groupId: ${GROUP_ID}
+  accessCode: ${ACCESS_CODE}

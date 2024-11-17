@@ -1,0 +1,26 @@
+version: '3.8'
+volumes:
+  db:
+    driver: local
+services:
+  db:
+    image: postgres:14.1-alpine
+    restart: always
+    volumes:
+      - db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5433:5432'
+
+  bot:
+    image: education-bot:latest
+    restart: no
+    environment:
+      - DB_HOST=db
+      - GROUP_ID=
+      - CONFIRMATION_CODE=
+      - ACCESS_CODE=
+    ports:
+      - '80:8080'
