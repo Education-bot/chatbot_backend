@@ -58,4 +58,4 @@ jobs:
           vm-core-fraction: 100
           vm-subnet-id: ${{ secrets.YC_SUBNET_ID}}
           user-data-path: './user-data.yaml'
-          docker-compose-path: './docker-compose.yaml-prod.yaml'
+          docker-compose-path: './docker-compose-prod.yaml'
