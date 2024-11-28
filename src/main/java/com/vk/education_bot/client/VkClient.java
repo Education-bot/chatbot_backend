@@ -1,7 +1,5 @@
 package com.vk.education_bot.client;
 
-import com.vk.api.sdk.actions.Messages;
-import com.vk.api.sdk.client.TransportClient;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.GroupActor;
 import com.vk.api.sdk.exceptions.ApiException;
