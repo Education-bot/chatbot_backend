@@ -23,6 +23,34 @@
 💥 Важно: Не пушим в master/main напрямую, иначе такие коммиты будем реверетить!
 
 
+## How-To
+### Как задеплоить руками на виртуалку?
+1. Скачать утилиту yc и docker, авторизоваться в docker-registry. Инструкция в помощь: https://yandex.cloud/ru/docs/container-registry/quickstart/?from=int-console-empty-state#registry-create
+```
+yc init
+yc container registry configure-docker
+```
+
+2. Собрать jar (booJar в gradle)
+3. Собрать образ, указав платформу linux, в качестве тега указываем дату в формате YYYY-MM-DD (нпример, 2024-11-28):
+```
+docker build --platform linux/amd64 -t cr.yandex/crpedt3c6ei2sjstcjin/education-bot:{DATE_TAG} .
+```
+4. Запушить в реджистри:
+```
+docker push cr.yandex/crpedt3c6ei2sjstcjin/education-bot:{DATE_TAG}
+```
+5. Заходим на виртуалку:
+```
+yc compute ssh --id fv4q9dp8btooloqf9hvk
+```
+6. В домашней директории ищем docker-compose.yaml и запускаем его, предварительно стопнув предыдущий:
+```
+docker-compose stop
+docker-compose-up
+```
+
+
 ## Задание от заказчика
 **Чат-бот для сообщества**
 Цель проекта:
