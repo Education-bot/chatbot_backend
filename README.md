@@ -62,7 +62,7 @@ docker pull cr.yandex/crpedt3c6ei2sjstcjin/education-bot:{DATE_TAG}
 ```
 9. Запустить. Контейнер пересоберется из нового образа
 ```bash
-docker-compose-up -d
+docker-compose up -d
 ```
 
 ## Задание от заказчика
