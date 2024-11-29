@@ -11,7 +11,6 @@
 - [Инфра - Yandex Cloud](https://console.yandex.cloud/folders/b1gbae6rrn6e2e7l80pc)
 - [Доска - github](https://github.com/orgs/Education-bot/projects/2)
 
-
 ## Договорённости в команде
 ### Работа с Git
 🧠 Есть предложение работать согласно подходу trunk-based-development для 
@@ -22,34 +21,49 @@
 4. Пулл-реквест: Создайте пулл-реквест на GitHub и упоминайте в чате кого-то для ревью.
 💥 Важно: Не пушим в master/main напрямую, иначе такие коммиты будем реверетить!
 
+## How to
+### Деплой на VM
 
-## How-To
-### Как задеплоить руками на виртуалку?
-1. Скачать утилиту yc и docker, авторизоваться в docker-registry. Инструкция в помощь: https://yandex.cloud/ru/docs/container-registry/quickstart/?from=int-console-empty-state#registry-create
-```
+1. Скачать утилиту yc и docker, авторизоваться в docker-registry. Инструкция в
+   помощь: https://yandex.cloud/ru/docs/container-registry/quickstart/?from=int-console-empty-state#registry-create
+```bash
 yc init
 yc container registry configure-docker
 ```
-
-2. Собрать jar (booJar в gradle)
-3. Собрать образ, указав платформу linux, в качестве тега указываем дату в формате YYYY-MM-DD (нпример, 2024-11-28):
+2. Собрать jar
+```bash
+./gradlew clean bootJar
 ```
-docker build --platform linux/amd64 -t cr.yandex/crpedt3c6ei2sjstcjin/education-bot:{DATE_TAG} .
+3. Собрать образ, с указанием платформы (для виртуалки обязательный пункт!), в качестве тега указываем дату в формате
+   `YYYY-MM-DD` (например, `2024-11-28`):
+```bash
+docker build . --platform linux/amd64 -t cr.yandex/crpedt3c6ei2sjstcjin/education-bot:{DATE_TAG}
 ```
-4. Запушить в реджистри:
-```
+4. Запушить в Registry:
+```bash
 docker push cr.yandex/crpedt3c6ei2sjstcjin/education-bot:{DATE_TAG}
 ```
-5. Заходим на виртуалку:
-```
+5. Зайти в VM:
+```bash
 yc compute ssh --id fv4q9dp8btooloqf9hvk
 ```
-6. В домашней директории ищем docker-compose.yaml и запускаем его, предварительно стопнув предыдущий:
+6. Авторизоваться в YC, на этот раз уже с виртуалки
+```bash
+curl -s --header Metadata-Flavor:Google 169.254.169.254/computeMetadata/v1/instance/service-accounts/default/token | cut -f1 -d',' | cut -f2 -d':' | tr -d '"' | sudo docker login --username iam --password-stdin cr.yandex
 ```
-docker-compose stop
-docker-compose-up
+7. Скачать нужный образ из Registry:
+```bash
+docker pull cr.yandex/crpedt3c6ei2sjstcjin/education-bot:{DATE_TAG}
 ```
-
+8. Повесить тег `latest` на нужный образ. (Решил делать так, чтобы в registry YC оставалась история версий и можно было
+   легко в них ориентироваться)
+```bash
+ docker tag cr.yandex/crpedt3c6ei2sjstcjin/education-bot:{DATE_TAG} cr.yandex/crpedt3c6ei2sjstcjin/education-bot:latest
+```
+9. Запустить. Контейнер пересоберется из нового образа
+```bash
+docker-compose-up -d
+```
 
 ## Задание от заказчика
 **Чат-бот для сообщества**
@@ -77,5 +91,4 @@ VK Education Projects — витрина проектов для студент�
 dev.vk.com/ru/api/bots/getting-started — инструкция по созданию чат-ботов
 
 Какие навыки и компетенции нужны для выполнения:
-PHP, Java, JavaScript, API, работа с сообществами 
-
+PHP, Java, JavaScript, API, работа с сообществами
