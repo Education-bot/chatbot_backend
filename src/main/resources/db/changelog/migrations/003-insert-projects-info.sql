@@ -1,6 +1,6 @@
 INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
+                     selling_description, algorithm, competencies, recommendations, complexity,
+                     study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
 VALUES (1,
         'Генеративная модель для создания изображений',
         'Анализ данных и машинное обучение',
@@ -20,49 +20,9 @@ VALUES (1,
         'Работа принята, если выполнены обязательные требования из описания проекта. Результат соответствует брифу и прикреплён на обучающую платформу в запрашиваемом формате.',
         'Подробное описание проекта с ожидаемыми результатами, материалы с решением',
         'Лучшие работы не выбираются',
-        'Лучшие работы не выбираются')
-ON CONFLICT DO NOTHING;
+        'Лучшие работы не выбираются'),
 
-CREATE TABLE IF NOT EXISTS question
-(
-
-    id            BIGSERIAL NOT NULL PRIMARY KEY,
-    question_text TEXT      NOT NULL UNIQUE,
-    answer        TEXT
-);
-
-
-
-CREATE TABLE IF NOT EXISTS project
-(
-    id                     BIGSERIAL NOT NULL PRIMARY KEY,
-    name                   TEXT,
-    direction              TEXT,
-    type                   TEXT,
-    min_members            INT,
-    max_members            INT,
-    goal                   TEXT,
-    description            TEXT,
-    materials              TEXT,
-    selling_description    TEXT,
-    algorithm              TEXT,
-    competencies           TEXT,
-    recommendations        TEXT,
-    complexity             TEXT,
-    study_format           TEXT,
-    intense                TEXT,
-    certificate_conditions TEXT,
-    expected_result        TEXT,
-    grading_criteria       TEXT,
-    benefits               TEXT
-);
-
-
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (2,
+       (2,
         'Датасет для хакатонов и олимпиад',
         'Анализ данных и машинное обучение',
         'Научно-исследовательские работы, курсовые работы, выпускные квалификационные работы',
@@ -81,14 +41,9 @@ VALUES (2,
         'Работа принята, если выполнены обязательные требования из описания проекта. Результат соответствует брифу и прикреплён на обучающую платформу в запрашиваемом формате.',
         'Датасет, состоящий из десятков или сотен тысяч строк/объектов',
         'Соответствие брифу. Отсутствует контент 18+. Может быть применено для проведения соревнований. Автор готов поделиться правами на датасет.',
-        'Сертификат, возможность практического применения на платформе All Cups или возможность размещения датасета на витрине проектов')
-ON CONFLICT DO NOTHING;
+        'Сертификат, возможность практического применения на платформе All Cups или возможность размещения датасета на витрине проектов'),
 
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (3,
+       (3,
         'Классификация происхождения вопросов для онлайн-игры',
         'Анализ данных и машинное обучение',
         'Научно-исследовательские работы, курсовые работы, выпускные квалификационные работы',
@@ -107,14 +62,9 @@ VALUES (3,
         'Работа принята, если выполнены обязательные требования из описания проекта. Результат соответствует брифу и прикреплён на обучающую платформу в запрашиваемом формате.',
         'Модель, способную отличать вопросы пользователей от профессиональных редакторов',
         'Лучшие работы не выбираются',
-        'Лучшие работы не выбираются')
-ON CONFLICT DO NOTHING;
+        'Лучшие работы не выбираются'),
 
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (4,
+       (4,
         'Моделирование с использованием эмбеддингов',
         'анализ данных и машинное обучение',
         'домашние задания, проектная деятельность, курсовые работы',
@@ -133,15 +83,9 @@ VALUES (4,
         'Работа принята, если выполнены обязательные требования из описания проекта. Результат соответствует брифу и прикреплён на обучающую платформу в запрашиваемом формате.',
         'Подробное описание проекта с ожидаемыми результатами, материалы с решением',
         'Лучшие работы не выбираются',
-        'Лучшие работы не выбираются')
-ON CONFLICT DO NOTHING;
+        'Лучшие работы не выбираются'),
 
-
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (5,
+       (5,
         'Модель обработки естественного языка',
         'Анализ данных и машинное обучение',
         'Проектная деятельность, научно-исследовательские работы, курсовые работы, выпускные квалификационные работы',
@@ -160,15 +104,9 @@ VALUES (5,
         'Работа принята, если выполнены обязательные требования из описания проекта. Результат соответствует брифу и прикреплён на обучающей платформе в запрашиваемом формате.',
         'Модель, которая способна наиболее точно отвечать на вопросы пользователей',
         'Соответствие брифу, работоспособность, сложность технологического решения, реализация дополнительных опций, наиболее точные ответы на вопросы, мультиязычность, работающие и логичные фичи.',
-        'Сертификат, возможность практического применения в проектах VK')
-ON CONFLICT DO NOTHING;
+        'Сертификат, возможность практического применения в проектах VK'),
 
-
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (6,
+       (6,
         'Нейросеть для автоматического анализа резюме',
         'анализ данных и машинное обучение',
         'домашние задания, проектная деятельность, курсовые работы',
@@ -187,15 +125,9 @@ VALUES (6,
         'Работа принята, если выполнены обязательные требования из описания проекта. Результат соответствует брифу и прикреплён на обучающей платформе в запрашиваемом формате.',
         'Подробное описание проекта с ожидаемыми результатами, материалы с решением',
         'Соответствие брифу; может быть применено на практике; разработан удобный интерфейс; нейросеть способна корректно выдавать рекомендации по исправлению недостатков в резюме.',
-        'Сертификат, практическую реализацию на базе ВК, экскурсию в офис, бизнес-завтрак')
-ON CONFLICT DO NOTHING;
+        'Сертификат, практическую реализацию на базе ВК, экскурсию в офис, бизнес-завтрак'),
 
-
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (7,
+       (7,
         'Нейросеть для оформления текстов работ по ГОСТу',
         'анализ данных и машинное обучение',
         'домашние задания, проектная деятельность, курсовые работы, выпускные квалификационные работы',
@@ -214,15 +146,8 @@ VALUES (7,
         'Работа принята, если выполнены обязательные требования из описания проекта. Результат соответствует брифу и прикреплён на обучающей платформе в запрашиваемом формате.',
         'Подробное описание проекта с ожидаемыми результатами, материалы с решением',
         'Соответствие брифу; может быть применено на практике; разработан удобный интерфейс; нейросеть способна корректно оформлять работу по ГОСТ.',
-        'Сертификат, практическую реализацию на базе ВК, экскурсию в офис, бизнес-завтрак')
-ON CONFLICT DO NOTHING;
-
-
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (8,
+        'Сертификат, практическую реализацию на базе ВК, экскурсию в офис, бизнес-завтрак'),
+       (8,
         'Обучение визуально-языковых моделей',
         'анализ данных и машинное обучение',
         'домашние задания, проектная деятельность, курсовые работы',
@@ -241,15 +166,9 @@ VALUES (8,
         'Работа принята, если выполнены обязательные требования из описания проекта. Результат соответствует брифу и прикреплён на обучающей платформе в запрашиваемом формате.',
         'Подробное описание проекта с ожидаемыми результатами, материалы с решением',
         'Лучшие работы не выбираются',
-        'Лучшие работы не выбираются')
-ON CONFLICT DO NOTHING;
+        'Лучшие работы не выбираются'),
 
-
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (9,
+       (9,
         'Предсказание количества просмотров рекламы',
         'Анализ данных и машинное обучение',
         'Научно-исследовательские работы, курсовые работы, выпускные квалификационные работы',
@@ -268,14 +187,9 @@ VALUES (9,
         'Работа принята, если выполнены обязательные требования из описания проекта. Результат соответствует брифу и прикреплён на обучающую платформу в запрашиваемом формате.',
         'Модель, способную предсказывать количество просмотров рекламы',
         'Лучшие работы не выбираются',
-        'Лучшие работы не выбираются')
-ON CONFLICT DO NOTHING;
+        'Лучшие работы не выбираются'),
 
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (10,
+       (10,
         'Предсказание пола пользователей',
         'Анализ данных и машинное обучение',
         'Домашние задания, проектная деятельность',
@@ -294,15 +208,9 @@ VALUES (10,
         'Работа принята, если выполнены обязательные требования из описания проекта. Результат соответствует брифу и прикреплён на обучающей платформе в запрашиваемом формате.',
         'Модель, которая способна предсказывать пол пользователей социальных сетей',
         'Лучшие работы не выбираются',
-        'Лучшие работы не выбираются')
-ON CONFLICT DO NOTHING;
+        'Лучшие работы не выбираются'),
 
-
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (11,
+       (11,
         'Поиск уязвимостей в программе VK Bug Bounty',
         'информационная безопасность',
         'проектная деятельность, курсовые работы',
@@ -321,15 +229,9 @@ VALUES (11,
         'Работа принята, если выполнены обязательные требования из описания проекта. Результат соответствует брифу и прикреплён на обучающей платформе в запрашиваемом формате.',
         'Отчет о валидной уязвимости, соответствующей правилам программы VK Bug Bounty, с алгоритмом ее воспроизведения, анализом угрозы и рекомендациями по их устранению.',
         'Соответствие брифу, актуальность, целесообразность.',
-        'Сертификат участника')
-ON CONFLICT DO NOTHING;
+        'Сертификат участника'),
 
-
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (12,
+       (12,
         'Безопасные способы авторизации',
         'информационная безопасность',
         'проектная деятельность, курсовые работы',
@@ -348,14 +250,9 @@ VALUES (12,
         'Работа принята, если выполнены обязательные требования из описания проекта. Результат соответствует брифу и прикреплён на обучающей платформе в запрашиваемом формате.',
         'Анализ наиболее безопасных способов авторизации для пользователей, предложения по выбору наиболее релевантного способа авторизации',
         'Соответствие брифу, актуальность, целесообразность.',
-        'Сертификат участника')
-ON CONFLICT DO NOTHING;
+        'Сертификат участника'),
 
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (13,
+       (13,
         'Предложения по защите данных для ВКонтакте',
         'информационная безопасность',
         'проектная деятельность, курсовые работы, выпускные квалификационные работы',
@@ -374,14 +271,9 @@ VALUES (13,
         'Работа принята, если выполнены обязательные требования из описания проекта. Результат соответствует брифу и прикреплён на обучающей платформе в запрашиваемом формате.',
         'Анализ существующей системы защиты данных, рекомендации по улучшению',
         'Соответствие брифу, актуальность, целесообразность.',
-        'Сертификат участника')
-ON CONFLICT DO NOTHING;
+        'Сертификат участника'),
 
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (14,
+       (14,
         'Дизайн системы уведомлений для супераппа',
         'креативные индустрии',
         'проектные работы, курсовые работы',
@@ -400,15 +292,9 @@ VALUES (14,
         'Работа принята, если выполнены обязательные требования из описания проекта. Результат соответствует брифу и прикреплён на обучающей платформе в запрашиваемом формате.',
         'Дизайн-макет системы уведомлений',
         'Соответствие брифу, целесообразность, креативность, возможность практического применения.',
-        'Сертификат, публикацию работ лучших студентов в открытых источниках, стажировку(?) ')
-ON CONFLICT DO NOTHING;
+        'Сертификат, публикацию работ лучших студентов в открытых источниках, стажировку(?) '),
 
-
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (15,
+       (15,
         'Идеи для форумов и мероприятий VK Education',
         'Креативные индустрии',
         'Проектной деятельности',
@@ -427,14 +313,9 @@ VALUES (15,
         'Работа принята, если выполнены обязательные требования из описания проекта. Результат соответствует брифу и прикреплён на обучающую платформу в запрашиваемом формате.',
         'Детализированное описание креативных идей для мероприятий и форумов.',
         'Идеи, которые максимально подходят под бренд VK и его аудиторию, предложения, которые могут реально повысить вовлеченность участников мероприятий, креативные решения, которые еще не были использованы или адаптированы под VK, высокое качество презентации и обоснованность выбора идей.',
-        'Сертификат участников, мерч, экскурсию в офис')
-ON CONFLICT DO NOTHING;
+        'Сертификат участников, мерч, экскурсию в офис'),
 
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (16,
+       (16,
         'Мини-сериал о карьере для VK',
         'Креативные индустрии',
         'Проектной деятельности',
@@ -453,15 +334,9 @@ VALUES (16,
         'Работа принята, если выполнены обязательные требования из описания проекта. Результат соответствует брифу и прикреплён на обучающую платформу в запрашиваемом формате.',
         'Подробные сценарии всех серий сериала, дополненные референсами на каждый кадр.',
         'Полнота и глубина проработки сценария, вовлекающая и интересная сюжетная линия, адаптация сценария под выбранный формат (вертикальный или горизонтальный), качество визуальных решений и референсов, обоснованность креативных решений.',
-        'Сертификат участников, мерч, стажировку в VK.')
-ON CONFLICT DO NOTHING;
+        'Сертификат участников, мерч, стажировку в VK.'),
 
-
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (17,
+       (17,
         'Нетворкинг-активности для интровертов',
         'Креативные индустрии',
         'Проектной деятельности',
@@ -480,15 +355,9 @@ VALUES (17,
         'Работа принята, если выполнены обязательные требования из описания проекта. Результат соответствует брифу и прикреплён на обучающей платформе в запрашиваемом формате.',
         'Детализированные описания 5 или более нетворкинг-активностей, направленных на создание комфортной и вовлекающей атмосферы на мероприятиях для учеников школ и студентов.',
         'Идеи, которые максимально способствуют созданию комфортной и дружелюбной атмосферы для общения, предложения, которые помогут преодолеть стеснительность, креативные решения, которые могут быть легко реализованы на различных мероприятиях, высокое качество презентации и обоснованность выбора активностей.',
-        'Сертификат участников, мерч, экскурсию в офис')
-ON CONFLICT DO NOTHING;
+        'Сертификат участников, мерч, экскурсию в офис'),
 
-
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (18,
+       (18,
         'Мерч для VK',
         'Креативные индустрии',
         'Проектной деятельности',
@@ -507,15 +376,9 @@ VALUES (18,
         'Работа принята, если выполнены обязательные требования из описания проекта. Результат соответствует брифу и прикреплен на обучающую платформу в запрашиваемом формате.',
         'Детализированное описание креативных концептов для реализации айтемов мерча.',
         'Идеи, которые максимально подходят под бренд VK и его аудиторию, предложения, которые реально возможно сделать, креативные решения, которые еще не были использованы, высокое качество презентации и обоснованность выбора идей.',
-        'Сертификат участников, мерч, экскурсию в офис')
-ON CONFLICT DO NOTHING;
+        'Сертификат участников, мерч, экскурсию в офис'),
 
-
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (19,
+       (19,
         'Рекламная кампания для продукта VK',
         'Креативные индустрии',
         'Проектной деятельности',
@@ -534,15 +397,9 @@ VALUES (19,
         'Работа принята, если выполнены обязательные требования из описания проекта. Результат соответствует брифу и прикреплён на обучающую платформу в запрашиваемом формате.',
         'Описание рекламной кампании, включающее детализацию каналов коммуникации, макеты рекламных материалов,примеры текстов, а также расчёт бюджета на реализацию кампании.',
         'Оригинальность и инновационность рекламной кампании,эффективность предложенных решений для преодоления баннерной слепоты, глубина анализа целевой аудитории,качество визуальных и текстовых материалов, обоснованность бюджета.',
-        'Сертификат участников, мерч, экскурсию в офис')
-ON CONFLICT DO NOTHING;
+        'Сертификат участников, мерч, экскурсию в офис'),
 
-
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (20,
+       (20,
         'Создание обучающей презентации для работы с супераппом',
         'Креативные индустрии',
         'Проектной деятельности',
@@ -561,15 +418,9 @@ VALUES (20,
         'Работа принята, если выполнены обязательные требования из описания проекта. Результат соответствует брифу и прикреплён на обучающую платформу в запрашиваемом формате.',
         'Интерактивная, визуально привлекательная презентация, объясняющая ключевые функции и возможности супераппа.',
         'Полнота и структурированность информации, креативность дизайна, адаптация под аудиторию, соответствие бренду VK.',
-        'Сертификат участников, возможность использовать проект в портфолио.')
-ON CONFLICT DO NOTHING;
+        'Сертификат участников, возможность использовать проект в портфолио.'),
 
-
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (21,
+       (21,
         'Сувенирная продукция для «Лаборатории» VK Play',
         'Креативные индустрии, геймдев ',
         'Проектные работы, домашние задания',
@@ -588,15 +439,9 @@ VALUES (21,
         'Работа принята, если выполнены обязательные требования из описания проекта. Результат соответствует брифу и прикреплён на обучающей платформе в запрашиваемом формате.',
         'Графические изображения или 3D-модели, которые возможно реализовать на физических носителях и использовать для награждения.',
         'Соответствие брифу, целесообразность, соответствие брендбуку и фирменному стилю, возможность реализации на физических носителях, креативность.',
-        'Сертификат участника, публикацию работ лучших студентов в открытых источниках, использование в проектах VK.')
-ON CONFLICT DO NOTHING;
+        'Сертификат участника, публикацию работ лучших студентов в открытых источниках, использование в проектах VK.'),
 
-
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (22,
+       (22,
         'Тексты для запуска кастомных стикеров ВКонтакте',
         'Креативные индустрии',
         'Проект или курсовая',
@@ -615,14 +460,9 @@ VALUES (22,
         'Работа принята, если выполнены обязательные требования из описания проекта и результат соответствует брифу.',
         'Документ с текстами, максимально готовыми к публикации, включая FAQ, пресс - релиз, посты, push - уведомления и описание набора стикеров.',
         'Грамотность, соответствие tone of voice компании, адаптация под разные целевые аудитории, соответствие техническому заданию.',
-        'Сертификат участника.')
-ON CONFLICT DO NOTHING;
+        'Сертификат участника.'),
 
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (23,
+       (23,
         'Шаблоны для визуалов с помощью технологий ИИ',
         'Креативные индустрии',
         'Проектной деятельности',
@@ -641,14 +481,9 @@ VALUES (23,
         'Работа принята, если выполнены обязательные требования из описания проекта и результат соответствует брифу.',
         'Пример базы фото и иллюстраций для использования в корпоративных коммуникациях.',
         'Идеи, которые максимально подходят под бренд VK и его аудиторию, креативные решения, которые еще не были использованы, высокое качество презентации и обоснованность выбора идей.',
-        'Сертификат участников, мерч, экскурсию в офис.')
-ON CONFLICT DO NOTHING;
+        'Сертификат участников, мерч, экскурсию в офис.'),
 
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (24,
+       (24,
         'Шаблоны мемов для SMM',
         'Креативные индустрии',
         'Домашние задания, проектная деятельность',
@@ -667,15 +502,9 @@ VALUES (24,
         'Работа принята, если выполнены обязательные требования из описания проекта и результат соответствует брифу.',
         'От 30 до 50 шаблонов статичных и видеомемов с названием и кратким описанием.',
         'Соответствие брифу, оригинальность шаблонов, актуальность контента, соответствие этическим нормам.',
-        'Сертификат участника, мерч от ВКонтакте, экскурсию в офис.')
-ON CONFLICT DO NOTHING;
+        'Сертификат участника, мерч от ВКонтакте, экскурсию в офис.'),
 
-
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (25,
+       (25,
         'Шоурил для «Лаборатории» VK Play',
         'Креативные индустрии, геймдев',
         'Проектные работы, домашние задания, курсовые работы',
@@ -694,14 +523,9 @@ VALUES (25,
         'Работа принята, если выполнены обязательные требования из описания проекта и результат соответствует брифу.',
         'Короткий видеоролик, демонстрирующий основные проекты.',
         'Соответствие брифу, целесообразность, креативность, возможность встраивания на сайт.',
-        'Сертификат участника, публикацию работ лучших студентов в открытых источниках, использование в проектах VK.')
-ON CONFLICT DO NOTHING;
+        'Сертификат участника, публикацию работ лучших студентов в открытых источниках, использование в проектах VK.'),
 
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (26,
+       (26,
         'Бот для рассылок сообщений пользователям',
         'Разработка',
         'Проектная деятельность, курсовые работы',
@@ -720,15 +544,9 @@ VALUES (26,
         'Работа принята, если выполнены обязательные требования из описания проекта и результат соответствует брифу.',
         'Функционирующий бот, способный сегментировать пользователей, отправлять персонализированные сообщения и предоставлять отчёты о результатах рассылок.',
         'Соответствие брифу, работоспособность, сложность технологического решения, точность и полнота реализации функций, оригинальность подхода, качество написанного кода.',
-        'Сертификат, возможность практического применения бота в проектах VK, комплект фирменной продукции (мерча) от VK Education.')
-ON CONFLICT DO NOTHING;
+        'Сертификат, возможность практического применения бота в проектах VK, комплект фирменной продукции (мерча) от VK Education.'),
 
-
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (27,
+       (27,
         'Бот для отслеживания ошибок',
         'Разработка',
         'Домашние задания, проектная деятельность',
@@ -747,14 +565,9 @@ VALUES (27,
         'Работа принята, если выполнены требования из описания проекта и результат соответствует брифу.',
         'Бот, который из генерируемого потока логов вычленяет ошибки и отправляет их в Telegram-чат.',
         'Гибкость, отказоустойчивость, стиль кода, масштабируемость.',
-        'Сертификат участника, бизнес-завтрак с разработчиком из VK.')
-ON CONFLICT DO NOTHING;
+        'Сертификат участника, бизнес-завтрак с разработчиком из VK.'),
 
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (28,
+       (28,
         'Мини-приложение «Конструктор резюме»',
         'Разработка',
         'Проектная деятельность, курсовые работы, выпускные квалификационные работы',
@@ -773,14 +586,9 @@ VALUES (28,
         'Работа принята, если выполнены обязательные требования и результат соответствует брифу.',
         'Мини-приложение на платформе dev.vk.com/ru.',
         'Соответствие брифу, работоспособность, сложность решения, актуальность, реализация дополнительных требований.',
-        'Сертификат участника, возможность практического применения приложения в проектах VK.')
-ON CONFLICT DO NOTHING;
+        'Сертификат участника, возможность практического применения приложения в проектах VK.'),
 
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (29,
+       (29,
         'Мини-приложение на свободную тематику',
         'Разработка',
         'Проектная деятельность, курсовые работы, выпускные квалификационные работы',
@@ -799,15 +607,9 @@ VALUES (29,
         'Работа принята, если выполнены обязательные требования и результат соответствует брифу.',
         'Мини-приложение на платформе dev.vk.com/ru, сопроводительная презентация для представителей VK.',
         'Соответствие брифу, креативность проекта, работоспособность, сложность решения, актуальность, реализация дополнительных требований.',
-        'Сертификат участника, возможность практического применения приложения в проектах VK.')
-ON CONFLICT DO NOTHING;
+        'Сертификат участника, возможность практического применения приложения в проектах VK.'),
 
-
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (30,
+       (30,
         'Сервис сегментирования пользователей',
         'Разработка',
         'Домашние задания, проектная деятельность, курсовые работы',
@@ -826,14 +628,9 @@ VALUES (30,
         'Работа принята, если выполнены обязательные требования из описания проекта и результат соответствует брифу.',
         'Рабочий сервис для аналитиков, который позволяет создавать новые сегменты, добавлять их пользователям и распределять между ними согласно заданным процентам.',
         'Гибкость кода, отказоустойчивость, удобство взаимодействия аналитика с системой.',
-        'Сертификат участника, бизнес-завтрак с разработчиком из VK.')
-ON CONFLICT DO NOTHING;
+        'Сертификат участника, бизнес-завтрак с разработчиком из VK.'),
 
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (31,
+       (31,
         'Чат-бот для сообщества',
         'Разработка',
         'Проектная деятельность, курсовые работы',
@@ -852,15 +649,9 @@ VALUES (31,
         'Работа принята, если выполнены обязательные требования из описания проекта и результат соответствует брифу.',
         'Чат-бот в конкретном сообществе ВКонтакте.',
         'Соответствие брифу, работоспособность, сложность технологического решения, актуальность, целесообразность, реализация дополнительных требований.',
-        'Сертификат участника, возможность практического применения чат-бота в проектах VK.')
-ON CONFLICT DO NOTHING;
+        'Сертификат участника, возможность практического применения чат-бота в проектах VK.'),
 
-
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (33,
+       (33,
         'Интеграция мобильных трекеров',
         'Разработка',
         'Проектная деятельность, научно-исследовательские работы, курсовые работы',
@@ -879,15 +670,9 @@ VALUES (33,
         'Работа принята, если выполнены обязательные требования из описания проекта и результат соответствует брифу.',
         'Работающее мобильное приложение со встроенными трекерами.',
         'Соответствие брифу, работоспособность, сложность технологического решения, работающие и логичные фичи.',
-        'Сертификат участника, возможность практического применения приложения в проектах VK, комплект фирменной продукции (мерча) от VK Education.')
-ON CONFLICT DO NOTHING;
+        'Сертификат участника, возможность практического применения приложения в проектах VK, комплект фирменной продукции (мерча) от VK Education.'),
 
-
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (34,
+       (34,
         'Проект на базе открытого кода Mail',
         'разработка',
         'проектной деятельности, курсовых работ, выпускных квалификационных работ',
@@ -906,15 +691,9 @@ VALUES (34,
         'Работа принята, если выполнены требования из описания проекта и результат соответствует брифу.',
         'Проект, в основе которого лежит код с сайта.',
         'Соответствие брифу, креативность, работоспособность, сложность решения, актуальность, целесообразность, работающие и логичные фичи.',
-        'Сертификат, возможность практического применения в VK.')
-ON CONFLICT DO NOTHING;
+        'Сертификат, возможность практического применения в VK.'),
 
-
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (35,
+       (35,
         'Проект на базе открытого кода OK',
         'разработка',
         'проектной деятельности, курсовых работ, выпускных квалификационных работ',
@@ -933,14 +712,9 @@ VALUES (35,
         'Работа принята, если выполнены требования из описания проекта и результат соответствует брифу.',
         'Проект, в основе которого лежит код с сайта.',
         'Соответствие брифу, креативность проекта, работоспособность, сложность технологического решения, актуальность, целесообразность, работающие и логичные фичи.',
-        'Сертификат, возможность практического применения в VK.')
-ON CONFLICT DO NOTHING;
+        'Сертификат, возможность практического применения в VK.'),
 
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (36,
+       (36,
         'Проект на базе открытого кода VK.com',
         'разработка',
         'проектной деятельности, курсовых работ, выпускных квалификационных работ',
@@ -960,14 +734,9 @@ VALUES (36,
         'Проект, в основе которого лежит код с сайта.',
         'Соответствие брифу, креативность проекта, работоспособность, сложность технологического решения, актуальность, целесообразность, работающие и логичные фичи.',
         'Сертификат, возможность практического применения в VK.')
-ON CONFLICT DO NOTHING;
+        ,
 
-
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (37,
+       (37,
         'Разработка бота на свободную тематику',
         'разработка',
         'проектной деятельности, курсовых работ, выпускных квалификационных работ',
@@ -986,14 +755,9 @@ VALUES (37,
         'Работа принята, если выполнены требования из описания проекта и результат соответствует брифу.',
         'Работающего бота, решающего бизнес-задачу, с отчётом о достигнутых результатах и бизнес-ценности.',
         'Соответствие брифу, работоспособность, сложность технологического решения, реальная бизнес-ценность, эффективность автоматизации, качество реализации.',
-        'Сертификат, возможность практического применения бота в проектах VK, комплект мерча от VK Education.')
-ON CONFLICT DO NOTHING;
+        'Сертификат, возможность практического применения бота в проектах VK, комплект мерча от VK Education.'),
 
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (38,
+       (38,
         'Система сбора апрувов на базе BotAPI',
         'разработка',
         'проектной деятельности, курсовых работ, выпускных квалификационных работ',
@@ -1013,14 +777,9 @@ VALUES (38,
         'Работающего чат-бота для автоматизации сбора апрувов и отчёт об эффективности решения.',
         'Соответствие брифу, работоспособность, сложность решения, реальная бизнес-ценность, эффективность автоматизации, качество реализации.',
         'Сертификат, возможность применения бота в проектах VK, комплект мерча от VK Education.')
-ON CONFLICT DO NOTHING;
+        ,
 
-
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (39,
+       (39,
         'Анализ тем выпускных квалификационных работ',
         'исследования',
         'курсовые, научно-исследовательские, выпускные квалификационные работы',
@@ -1040,14 +799,9 @@ VALUES (39,
         'Текстовое исследование, описывающее наиболее востребованные темы ВКР по укрупнённым группам специальностей.',
         'Соответствие брифу, достаточность данных, описаны выводы, применимость для разработки продуктовой стратегии.',
         'Сертификат участника, мерч от VK, бизнес-завтрак с руководителем проектного обучения.')
-ON CONFLICT DO NOTHING;
+        ,
 
-
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (42,
+       (42,
         'Исследование пользовательского опыта взаимодействия с корпоративным мессенджером',
         'исследования',
         'курсовые, проектные работы',
@@ -1066,14 +820,9 @@ VALUES (42,
         'Работа принята, если выполнены обязательные требования из описания проекта, результат соответствует брифу и прикреплён на платформу.',
         'Отчёт с рекомендациями по UX, прототипы с улучшениями (по желанию).',
         'Соответствие брифу, достоверность данных, описаны выводы, качество исследования и прототипов, реалистичность улучшений.',
-        'Сертификат участника.')
-ON CONFLICT DO NOTHING;
+        'Сертификат участника.'),
 
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (43,
+       (43,
         'Исследование потребностей студентов при прохождении практики',
         'Исследования',
         'Курсовые, научно-исследовательские, выпускные квалификационные работы',
@@ -1092,14 +841,9 @@ VALUES (43,
         'Работа принята, если выполнены обязательные требования из описания проекта, результат соответствует брифу и прикреплён на платформу.',
         'Текстовое исследование, описывающее ключевые потребности студентов при прохождении практики.',
         'Соответствие брифу, достоверность данных, полнота описания выводов, возможность использования при разработке стратегий.',
-        'Сертификат участника, мерч от ВК, бизнес-завтрак с руководителем проектного обучения.')
-ON CONFLICT DO NOTHING;
+        'Сертификат участника, мерч от ВК, бизнес-завтрак с руководителем проектного обучения.'),
 
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (45,
+       (45,
         'Конкурентный анализ митапов и подкастов в области IT',
         'Исследования',
         'Проектная деятельность, курсовые работы',
@@ -1118,14 +862,9 @@ VALUES (45,
         'Работа принята, если выполнены обязательные требования, результат соответствует брифу и прикреплён на платформу.',
         'Анализ конкурентов с описанием сильных и слабых сторон, предложения новых форматов и тем.',
         'Глубокий анализ конкурентов, уникальные идеи, качество презентации, практическая применимость предложений.',
-        'Сертификат участника, мерч, экскурсия в офис.')
-ON CONFLICT DO NOTHING;
+        'Сертификат участника, мерч, экскурсия в офис.'),
 
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (47,
+       (47,
         'Концепция HR-платформы',
         'Исследования',
         'Проектная деятельность, курсовые работы, выпускные квалификационные работы',
@@ -1145,14 +884,9 @@ VALUES (47,
         'Текстовый документ с детальным описанием концепции HR-платформы, включая анализ рынка, целевые сегменты, функционал и монетизацию.',
         'Соответствие брифу, полнота анализа, актуальность, применимость в бизнесе.',
         'Сертификат, возможность повлиять на развитие одного из экспериментальных продуктов VK, возможность приоритетного права на прохождение стажировки.')
-ON CONFLICT DO NOTHING;
+        ,
 
-
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (48,
+       (48,
         'Концепция альтернативной соцсети',
         'Исследования',
         'Проектная деятельность, курсовые работы, выпускные квалификационные работы',
@@ -1171,14 +905,9 @@ VALUES (48,
         'Работа принята, если выполнены обязательные требования, результат соответствует брифу и прикреплён на платформу.',
         'Текстовый документ с описанием концепции социальной сети, включая анализ рынка, аудиторию, функционал и монетизацию.',
         'Соответствие брифу, полнота анализа, актуальность, применимость в бизнесе.',
-        'Сертификат, возможность повлиять на развитие одного из экспериментальных продуктов VK, возможность приоритетного права на прохождение стажировки.')
-ON CONFLICT DO NOTHING;
+        'Сертификат, возможность повлиять на развитие одного из экспериментальных продуктов VK, возможность приоритетного права на прохождение стажировки.'),
 
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (49,
+       (49,
         'Концепция конференции VK Инклюзия',
         'Продукт',
         'Проектная деятельность, курсовые работы, выпускные квалификационные работы',
@@ -1197,14 +926,9 @@ VALUES (49,
         'Работа принята, если выполнены обязательные требования из описания проекта, результат соответствует брифу и прикреплён на платформу.',
         'Презентация концепции конференции VK Инклюзия с подробным описанием программы, тематики, участников, развлекательной части, бюджета и каналов продвижения.',
         'Соответствие брифу, жизнеспособность идеи, актуальность, развернутость ответов, аргументация предложений.',
-        'Сертификат, возможность практического применения концепции в проектах VK.')
-ON CONFLICT DO NOTHING;
+        'Сертификат, возможность практического применения концепции в проектах VK.'),
 
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (51,
+       (51,
         'Концепция мотивационного сервиса',
         'Исследования',
         'Проектная деятельность, курсовые работы, выпускные квалификационные работы',
@@ -1223,14 +947,9 @@ VALUES (51,
         'Работа принята, если выполнены обязательные требования, результат соответствует брифу и представлен в запрашиваемом формате.',
         'Текстовый документ с детальным описанием концепции мотивационного сервиса, аналитическими выводами и предложениями.',
         'Соответствие брифу, полнота анализа, актуальность, применимость предложений.',
-        'Сертификат, возможность повлиять на развитие экспериментального продукта VK, приоритетное право на стажировку.')
-ON CONFLICT DO NOTHING;
+        'Сертификат, возможность повлиять на развитие экспериментального продукта VK, приоритетное право на стажировку.'),
 
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (52,
+       (52,
         'Концепция развития приложения «Питомцы ВКонтакте»',
         'Исследования',
         'Проектная деятельность, курсовые работы, выпускные квалификационные работы',
@@ -1249,14 +968,9 @@ VALUES (52,
         'Работа принята, если выполнены обязательные требования, результат соответствует брифу и представлен в запрашиваемом формате.',
         'Документ с описанием концепции развития приложения, презентация ключевых идей, включая анализ рынка, инновационные предложения и потенциальные интеграции.',
         'Соответствие брифу, глубина анализа, инновационность идей, качество интеграций и презентации.',
-        'Сертификат, участие в развитии экспериментального продукта VK, приоритетное право на стажировку.')
-ON CONFLICT DO NOTHING;
+        'Сертификат, участие в развитии экспериментального продукта VK, приоритетное право на стажировку.'),
 
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (53,
+       (53,
         'Концепция сервиса «Помощник на кухне»',
         'Исследования',
         'Проектная деятельность, курсовые работы, выпускные квалификационные работы',
@@ -1275,14 +989,9 @@ VALUES (53,
         'Работа принимается, если выполнены обязательные требования, результат соответствует брифу и представлен в запрашиваемом формате.',
         'Документ с описанием ключевых артефактов анализа рынка и концепцией продукта.',
         'Соответствие брифу, полнота анализа, актуальность, применимость в бизнесе.',
-        'Сертификат, участие в развитии экспериментального продукта VK, приоритетное право на стажировку.')
-ON CONFLICT DO NOTHING;
+        'Сертификат, участие в развитии экспериментального продукта VK, приоритетное право на стажировку.'),
 
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, recommendations, complexity,
-                      study_format, intense, certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (54,
+       (54,
         'Новые рынки для VK Tutoria',
         'Исследования',
         'Проектная деятельность, научно-исследовательские работы, курсовые работы, выпускные квалификационные работы',
@@ -1301,15 +1010,9 @@ VALUES (54,
         'Работа принимается, если выполнены обязательные требования, результат соответствует брифу и представлен в запрашиваемом формате.',
         'Презентация с предложениями по стратегии выхода VK Tutoria на новые рынки.',
         'Соответствие брифу, полнота анализа, актуальность, применимость в бизнесе.',
-        'Сертификат, участие в развитии экспериментального продукта VK, приоритетное право на стажировку.')
-ON CONFLICT DO NOTHING;
+        'Сертификат, участие в развитии экспериментального продукта VK, приоритетное право на стажировку.'),
 
-
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, complexity, study_format, intense,
-                      certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (55,
+       (55,
         'Новые рынки для VK WorkSpace',
         'Исследования',
         'Проектная деятельность, научно-исследовательские работы, курсовые работы, выпускные квалификационные работы',
@@ -1327,14 +1030,10 @@ VALUES (55,
         'Работа принимается, если выполнены обязательные требования, результат соответствует брифу и представлен в запрашиваемом формате.',
         'Предложения о стратегии выхода VK WorkSpace на рынки СНГ на основе анализа рынка.',
         'Соответствие брифу, полнота анализа, актуальность, применимость в бизнесе.',
-        'Сертификат, участие в развитии экспериментального продукта VK, приоритетное право на стажировку.')
-ON CONFLICT DO NOTHING;
+        'Сертификат, участие в развитии экспериментального продукта VK, приоритетное право на стажировку.',
+        null),
 
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, complexity, study_format, intense,
-                      certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (57,
+       (57,
         'Образовательный ESG-курс для сотрудников VK',
         'Продукт',
         'Проектная деятельность, курсовые работы',
@@ -1352,15 +1051,11 @@ VALUES (57,
         'Работа принимается, если выполнены обязательные требования, результат соответствует брифу и представлен в указанном формате.',
         'Креативная концепция и структура образовательного ESG-курса для сотрудников.',
         'Соответствие брифу, жизнеспособность идеи, актуальность и целесообразность решения, подробные и аргументированные ответы.',
-        'Сертификат, возможность практического применения концепции в проектах VK.')
-ON CONFLICT DO NOTHING;
+        'Сертификат, возможность практического применения концепции в проектах VK.',
+        null)
+        ,
 
-
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, complexity, study_format, intense,
-                      certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (59,
+       (59,
         'Привлечение молодёжной аудитории в сервис Покупки',
         'исследования',
         'Проектная деятельность, научно-исследовательские работы, курсовые работы, выпускные квалификационные работы',
@@ -1378,15 +1073,10 @@ VALUES (59,
         'Работа принимается, если выполнены обязательные требования, результат соответствует брифу и представлен в указанном формате.',
         'Анализ рынка и целевой аудитории. Гипотезы о ценности сервиса для молодёжной аудитории. Описание дополнительных фич и инструментов.',
         'Соответствие брифу, полнота анализа, актуальность, применимость в бизнесе.',
-        'Сертификат, возможность повлиять на развитие одного из экспериментальных продуктов VK, приоритетное право на прохождение стажировки.')
-ON CONFLICT DO NOTHING;
+        'Сертификат, возможность повлиять на развитие одного из экспериментальных продуктов VK, приоритетное право на прохождение стажировки.',
+        null),
 
-
-
-INSERT INTO project (id, name, direction, type, min_members, max_members, goal, description, materials,
-                      selling_description, algorithm, competencies, complexity, study_format, intense,
-                      certificate_conditions, expected_result, grading_criteria, benefits)
-VALUES (60,
+       (60,
         'Экологические и социальные инициативы на VK Fest',
         'Менеджмент',
         'Проектная деятельность, курсовые работы',
@@ -1404,5 +1094,6 @@ VALUES (60,
         'Работа принимается, если выполнены обязательные требования, результат соответствует брифу и представлен в указанном формате.',
         'Единая программа ESG-инициатив для VK Fest, включающая экологические и социальные направления.',
         'Соответствие брифу, жизнеспособность идей, актуальность, развернутые и обоснованные предложения, наличие примеров и аргументации.',
-        'Сертификат, возможность практического применения концепции в проектах VK.')
+        'Сертификат, возможность практического применения концепции в проектах VK.',
+        null)
 ON CONFLICT DO NOTHING;
