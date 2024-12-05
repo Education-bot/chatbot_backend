@@ -7,9 +7,6 @@ bootJar {
     mainClass = 'com.vk.education_bot.EducationBotApplication'
 }
 
-group = 'com.vk'
-version = '0.0.1-SNAPSHOT'
-
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
