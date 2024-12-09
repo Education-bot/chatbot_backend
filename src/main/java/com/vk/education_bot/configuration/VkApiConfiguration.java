@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@EnableConfigurationProperties(BotProperties.class)
+@EnableConfigurationProperties({BotProperties.class, YandexGptProperties.class})
 public class VkApiConfiguration {
 
     @Bean
