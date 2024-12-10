@@ -5,7 +5,7 @@ spring:
     change-log: classpath:/db/changelog/db.change-log-master.yml
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     show-sql: true
 
   datasource:
@@ -17,3 +17,4 @@ properties:
   confirmationCode: ${CONFIRMATION_CODE}
   groupId: ${GROUP_ID}
   accessCode: ${ACCESS_CODE}
+  supportUserId: ${SUPPORT_USER_ID}
