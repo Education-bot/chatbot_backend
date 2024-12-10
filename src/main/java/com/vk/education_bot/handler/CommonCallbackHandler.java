@@ -6,27 +6,36 @@ import com.vk.api.sdk.events.callback.CallbackApi;
 import com.vk.api.sdk.objects.callback.MessageNew;
 import com.vk.api.sdk.objects.callback.messages.CallbackMessage;
 import com.vk.education_bot.client.VkClient;
+import com.vk.education_bot.client.YandexGptClient;
 import com.vk.education_bot.configuration.BotProperties;
+import com.vk.education_bot.dto.question.QuestionPrediction;
+import com.vk.education_bot.entity.Question;
+import com.vk.education_bot.logic.QuestionClassifier;
 import com.vk.education_bot.service.QuestionService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Component
 public class CommonCallbackHandler extends CallbackApi {
 
-    private final static String DEFAULT_MESSAGE = "Message accepted";
+    private final static String UNKNOWN_QUESTION = "Извините, я не понимаю ваш вопрос. Вот список доступных вопросов:\n";
     private final static String EMPTY = "";
 
     private final VkClient vkClient;
     private final BotProperties botProperties;
     private final QuestionService questionService;
+    private final QuestionClassifier questionClassifier;
 
-    public CommonCallbackHandler(BotProperties botProperties, VkClient vkClient, QuestionService questionService) {
+    public CommonCallbackHandler(BotProperties botProperties, VkClient vkClient, QuestionService questionService, QuestionClassifier questionClassifier) {
         super(botProperties.confirmationCode());
         this.vkClient = vkClient;
         this.botProperties = botProperties;
         this.questionService = questionService;
+        this.questionClassifier = questionClassifier;
     }
 
     @Override
@@ -37,22 +46,11 @@ public class CommonCallbackHandler extends CallbackApi {
                         .getFromId())
                 .orElseThrow(() -> new RuntimeException("UserId not presented"));
 
-        // Получение текста сообщения от пользователя
-        String userInput = Optional.ofNullable(message
-                        .getObject()
-                        .getMessage()
-                        .getText())
-                .orElse("");
-
-        // Проверка текста сообщения в базе данных
-        String response = questionService.getAnswer(userInput);
-
-        if (response == null) {
-            response = "Извините, я не понимаю ваш вопрос. Вот список доступных вопросов:\n" +
-                    String.join("\n", questionService.getAllQuestions());
-        }
-
-        vkClient.sendMessage(userId, response);
+        String answer = questionClassifier.classifyQuestion(message
+                .getObject().getMessage().getText())
+                .map(Question::getAnswer)
+                .orElseGet(() -> UNKNOWN_QUESTION + String.join("\n", questionService.getAllQuestionsText()));
+        vkClient.sendMessage(userId, answer);
     }
 
     @Override
