@@ -169,6 +169,10 @@ public class CommonCallbackHandler extends CallbackApi {
                     vkClient.sendMessage(userId, "Не найдены неизвестные вопросы по указанным ID.");
                     return;
                 }
+                // Для каждого удаляемого вопроса отправляем уведомление пользователю
+                for (UnknownQuestion uq : unknownQuestions) {
+                    vkClient.sendMessage(uq.getUserId(), "Ваш вопрос снят с рассмотрения");
+                }
                 // Удаляем выбранные вопросы из списка
                 unknownQuestionService.deleteAll(unknownQuestions);
 
