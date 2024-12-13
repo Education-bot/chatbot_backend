@@ -9,12 +9,17 @@ spring:
     show-sql: true
 
   datasource:
-    url: jdbc:postgresql://${DB_HOST}:5432/edu_bot
+    url: jdbc:postgresql://${DB_HOST:localhost}:5432/edu_bot
     username: postgres
     password: postgres
 
 properties:
-  confirmationCode: ${CONFIRMATION_CODE}
-  groupId: ${GROUP_ID}
-  accessCode: ${ACCESS_CODE}
-  supportUserId: ${SUPPORT_USER_ID}
+  vk:
+    confirmationCode: ${CONFIRMATION_CODE}
+    groupId: ${GROUP_ID}
+    accessCode: ${ACCESS_CODE}
+    supportUserId: ${SUPPORT_USER_ID}
+  yandex-gpt:
+    folderId: ${YC_FOLDER_ID}
+    token: ${IAM_TOKEN}
+    host: ${Y_GPT_HOST:https://llm.api.cloud.yandex.net}

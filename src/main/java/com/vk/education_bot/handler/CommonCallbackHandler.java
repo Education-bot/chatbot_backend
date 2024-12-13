@@ -7,35 +7,48 @@ import com.vk.api.sdk.objects.callback.MessageNew;
 import com.vk.api.sdk.objects.callback.MessageReply;
 import com.vk.api.sdk.objects.callback.messages.CallbackMessage;
 import com.vk.education_bot.client.VkClient;
+import com.vk.education_bot.client.YandexGptClient;
 import com.vk.education_bot.configuration.BotProperties;
+
 import com.vk.education_bot.entity.UnknownQuestion;
-import com.vk.education_bot.service.QuestionService;
 import com.vk.education_bot.service.UnknownQuestionService;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+
+import com.vk.education_bot.dto.question.QuestionPrediction;
+import com.vk.education_bot.entity.Question;
+import com.vk.education_bot.logic.QuestionClassifier;
+import com.vk.education_bot.service.QuestionService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Slf4j
 @Component
 public class CommonCallbackHandler extends CallbackApi {
 
-    private final static String DEFAULT_MESSAGE = "Message accepted";
+    private final static String UNKNOWN_QUESTION = "Извините, я не понимаю ваш вопрос. Вот список доступных вопросов:\n";
     private final static String EMPTY = "";
 
     private final VkClient vkClient;
     private final BotProperties botProperties;
     private final QuestionService questionService;
-    private final UnknownQuestionService unknownQuestionService;
 
-    public CommonCallbackHandler(BotProperties botProperties, VkClient vkClient, QuestionService questionService, UnknownQuestionService unknownQuestionService) {
+    private final UnknownQuestionService unknownQuestionService;
+    private final QuestionClassifier questionClassifier;
+
+    public CommonCallbackHandler(BotProperties botProperties, VkClient vkClient, QuestionService questionService, QuestionClassifier questionClassifier, UnknownQuestionService unknownQuestionService) {
         super(botProperties.confirmationCode());
         this.vkClient = vkClient;
         this.botProperties = botProperties;
         this.questionService = questionService;
         this.unknownQuestionService = unknownQuestionService;
+        this.questionClassifier = questionClassifier;
     }
 
     @Override
@@ -53,7 +66,10 @@ public class CommonCallbackHandler extends CallbackApi {
             return;
         }
 
-        String response = questionService.getAnswer(userInput);
+        String response = questionClassifier.classifyQuestion(message
+                .getObject().getMessage().getText())
+                .map(Question::getAnswer)
+                .orElseGet(() -> UNKNOWN_QUESTION + String.join("\n", questionService.getAllQuestionsText()));
 
         if (response == null) {
             // Обработка неизвестного вопроса

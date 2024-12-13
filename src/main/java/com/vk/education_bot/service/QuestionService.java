@@ -28,9 +28,16 @@ public class QuestionService {
                 .orElse(null);
     }
 
+
     public List<String> getAllQuestions() {
         return questionRepository.findAll().stream()
                 .map(Question::getText)
+    }
+
+    // Получить список всех вопросов
+    public List<String> getAllQuestionsText() {
+        return questionRepository.findAll().stream()
+                .map(e -> e.getId() + ". " + e.getText()) // Получаем только текст вопросов
                 .toList();
     }
 
