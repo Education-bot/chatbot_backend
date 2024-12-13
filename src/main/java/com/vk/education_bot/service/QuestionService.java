@@ -31,7 +31,8 @@ public class QuestionService {
 
     public List<String> getAllQuestions() {
         return questionRepository.findAll().stream()
-                .map(Question::getText);
+                .map(Question::getText)
+                .toList();
     }
 
     // Получить список всех вопросов
