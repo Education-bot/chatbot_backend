@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class QuestionService {
@@ -17,11 +18,21 @@ public class QuestionService {
         this.questionRepository = questionRepository;
     }
 
-    // Получить ответ по тексту вопроса
+    public boolean checkQuestionExists(String text) {
+        return questionRepository.findByText(text).isPresent();
+    }
+
     public String getAnswer(String text) {
         return questionRepository.findByText(text)
                 .map(Question::getAnswer)
                 .orElse(null);
+    }
+
+
+    public List<String> getAllQuestions() {
+        return questionRepository.findAll().stream()
+                .map(Question::getText)
+                .toList();
     }
 
     // Получить список всех вопросов
@@ -30,5 +41,13 @@ public class QuestionService {
                 .map(e -> e.getId() + ". " + e.getText()) // Получаем только текст вопросов
                 .toList();
     }
+
+    public void saveQuestion(String text, String answer) {
+        Question question = new Question();
+        question.setText(text);
+        question.setAnswer(answer);
+        questionRepository.save(question);
+    }
+
 }
 
