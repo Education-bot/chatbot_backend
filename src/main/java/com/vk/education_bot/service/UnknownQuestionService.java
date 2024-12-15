@@ -20,7 +20,9 @@ public class UnknownQuestionService {
 
     public void saveUnknownQuestion(long userId, String questionText) {
         UnknownQuestion unknownQuestion = new UnknownQuestion(userId, questionText);
-        unknownQuestionRepository.save(unknownQuestion);
+        if (unknownQuestionRepository.findByQuestionText(questionText).isEmpty()) {
+            unknownQuestionRepository.save(unknownQuestion);
+        }
     }
 
     public List<UnknownQuestion> getAllUnknownQuestions() {

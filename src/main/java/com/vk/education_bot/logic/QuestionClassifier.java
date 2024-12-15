@@ -1,6 +1,6 @@
 package com.vk.education_bot.logic;
 
-import com.vk.education_bot.client.YandexGptClient;
+import com.vk.education_bot.client.YandexGptClassificationClient;
 import com.vk.education_bot.dto.question.QuestionPrediction;
 import com.vk.education_bot.entity.Question;
 import com.vk.education_bot.repository.QuestionRepository;
@@ -16,7 +16,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class QuestionClassifier {
 
-    private final YandexGptClient yandexGptClient;
+    private final YandexGptClassificationClient yandexGptClassificationClient;
     private final QuestionRepository questionRepository;
     private static final int MAX_LABELS = 20;
 
@@ -29,7 +29,7 @@ public class QuestionClassifier {
                 .map(Question::getText)
                 .limit(MAX_LABELS)
                 .toList();
-        return yandexGptClient.classifyQuestion(allQuestionsText, questionText)
+        return yandexGptClassificationClient.classifyQuestion(allQuestionsText, questionText)
                 .predictions()
                 .stream()
                 .max(Comparator.comparingDouble(QuestionPrediction.Prediction::confidence))

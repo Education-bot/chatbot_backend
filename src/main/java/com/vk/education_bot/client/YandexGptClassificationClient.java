@@ -13,7 +13,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class YandexGptClient {
+public class YandexGptClassificationClient {
 
     private final static String BEARER = "Bearer ";
     private final static String MODEL_URI_TEMPLATE = "cls://%s/yandexgpt/latest";
@@ -23,7 +23,7 @@ public class YandexGptClient {
     private final String token;
     private final String modelUri;
 
-    public YandexGptClient(YandexGptProperties yandexGptProperties) {
+    public YandexGptClassificationClient(YandexGptProperties yandexGptProperties) {
         this.token = BEARER + yandexGptProperties.token();
         this.modelUri = MODEL_URI_TEMPLATE.formatted(yandexGptProperties.folderId());
         this.webClient = WebClient.create(yandexGptProperties.host());

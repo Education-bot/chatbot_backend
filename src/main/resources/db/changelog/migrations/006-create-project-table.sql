@@ -19,5 +19,6 @@ CREATE TABLE IF NOT EXISTS project
     certificate_conditions TEXT,
     expected_result        TEXT,
     grading_criteria       TEXT,
-    benefits               TEXT
+    benefits               TEXT,
+    section_id BIGINT REFERENCES section (id) ON DELETE CASCADE
 );
