@@ -3,6 +3,8 @@ package com.vk.education_bot.handler;
 import com.vk.api.sdk.client.GsonHolder;
 import com.vk.api.sdk.events.Events;
 import com.vk.api.sdk.events.callback.CallbackApi;
+import com.vk.api.sdk.exceptions.ApiException;
+import com.vk.api.sdk.exceptions.ClientException;
 import com.vk.api.sdk.objects.callback.MessageNew;
 import com.vk.api.sdk.objects.callback.MessageReply;
 import com.vk.api.sdk.objects.callback.messages.CallbackMessage;
@@ -25,6 +27,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -60,6 +63,15 @@ public class CommonCallbackHandler extends CallbackApi {
                 .orElseThrow(() -> new RuntimeException("UserId not presented"));
         // Сообщение от пользователя
         String userInput = Optional.ofNullable(message.getObject().getMessage().getText()).orElse("");
+        String payload = Optional.ofNullable(message.getObject().getMessage().getPayload()).orElse("");
+
+        if (payload.contains("\"button\": \"yes\"")) {
+            System.out.println("YES");
+            return;
+        } else if (payload.contains("\"button\": \"no\"")) {
+            System.out.println("NO");
+            return;
+        }
 
         if (userInput.startsWith("/admin")) {
             handleAdminCommand(userId, userInput);
@@ -85,7 +97,10 @@ public class CommonCallbackHandler extends CallbackApi {
         } else {
             vkClient.sendMessage(userId, response);
         }
+        vkClient.sendFollowUpQuestion(userId);
     }
+
+
 
     private void handleAdminCommand(long userId, String userInput) {
         if (userId != botProperties.supportUserId()) {
