@@ -6,6 +6,7 @@ import com.vk.api.sdk.events.callback.CallbackApi;
 import com.vk.api.sdk.objects.callback.MessageNew;
 import com.vk.api.sdk.objects.callback.MessageReply;
 import com.vk.api.sdk.objects.callback.messages.CallbackMessage;
+import com.vk.education_bot.client.KeyboardFactory;
 import com.vk.education_bot.client.VkClient;
 import com.vk.education_bot.client.YandexGptAskingClient;
 import com.vk.education_bot.configuration.BotProperties;
@@ -38,13 +39,13 @@ public class CommonCallbackHandler extends CallbackApi {
     private final Map<Long, UserContext> userContexts = new ConcurrentHashMap<>();
     private final Map<Long, String> userQuestions = new ConcurrentHashMap<>();
 
-    private final VkClient vkClient;
     private final BotProperties botProperties;
     private final QuestionService questionService;
     private final SectionService sectionService;
-    private final YandexGptAskingClient yandexGptAskingClient;
-
     private final UnknownQuestionService unknownQuestionService;
+
+    private final VkClient vkClient;
+    private final YandexGptAskingClient yandexGptAskingClient;
     private final QuestionClassifier questionClassifier;
 
     public CommonCallbackHandler(BotProperties botProperties, VkClient vkClient, QuestionService questionService, SectionService sectionService, YandexGptAskingClient yandexGptAskingClient, QuestionClassifier questionClassifier, UnknownQuestionService unknownQuestionService) {
@@ -86,8 +87,8 @@ public class CommonCallbackHandler extends CallbackApi {
                                 /admin delete 1, 3, 10, 56 - для удаления вопроса\s
                                 /admin answer 1, 3, 10, 56, 101 "Текст вопроса" "Текст ответа" - для ответа на вопросы\s
                                 """,
-                        vkClient.createBackButtonKeyboard());
-                vkClient.clearKeyboard();
+                        KeyboardFactory.createBackButtonKeyboard());
+                KeyboardFactory.clearKeyboard();
             }
             return;
         }
@@ -100,21 +101,21 @@ public class CommonCallbackHandler extends CallbackApi {
             case ASKING_GENERAL_QUESTION -> handleUserQuestion(userInput, context);
             case ADMIN -> handleAdminCommand(userInput, context);
             case YES_NO -> handleYesNo(userInput, context);
-            default -> vkClient.sendMessageWithKeyboard(userId, "Выбери опцию", vkClient.createMainMenuKeyboard());
+            default -> vkClient.sendMessageWithKeyboard(userId, "Выбери опцию", KeyboardFactory.createMainMenuKeyboard());
         }
     }
 
     private void handleMainMenu(String userInput, UserContext context) {
         long userId = context.getUserId();
         if ("Задать общий вопрос" .equalsIgnoreCase(userInput)) {
-            vkClient.sendMessageWithKeyboard(userId, "Введи свой вопрос", vkClient.createBackButtonKeyboard());
+            vkClient.sendMessageWithKeyboard(userId, "Введи свой вопрос", KeyboardFactory.createBackButtonKeyboard());
             context.setState(UserState.ASKING_GENERAL_QUESTION);
         } else if ("Вопрос по проекту" .equalsIgnoreCase(userInput)) {
             List<Section> sections = sectionService.getAllSections();
-            vkClient.sendMessageWithKeyboard(userId, "Выбери раздел", vkClient.createSectionsKeyboard(sections));
+            vkClient.sendMessageWithKeyboard(userId, "Выбери раздел", KeyboardFactory.createSectionsKeyboard(sections));
             context.setState(UserState.SECTION_SELECTION);
         } else {
-            vkClient.sendMessageWithKeyboard(userId, "Выбери опцию", vkClient.createMainMenuKeyboard());
+            vkClient.sendMessageWithKeyboard(userId, "Выбери опцию", KeyboardFactory.createMainMenuKeyboard());
         }
     }
 
@@ -134,11 +135,11 @@ public class CommonCallbackHandler extends CallbackApi {
                 projectListMessage.append(project.getId()).append(". ").append(project.getName()).append("\n");
             }
 
-            vkClient.sendMessageWithKeyboard(userId, projectListMessage.toString(), vkClient.createBackButtonKeyboard());
+            vkClient.sendMessageWithKeyboard(userId, projectListMessage.toString(), KeyboardFactory.createBackButtonKeyboard());
             context.setState(UserState.PROJECT_SELECTION);
 
         } catch (Exception e) {
-            vkClient.sendMessageWithKeyboard(userId, "Раздел не найден. Попробуйте снова.", vkClient.createSectionsKeyboard(sectionService.getAllSections()));
+            vkClient.sendMessageWithKeyboard(userId, "Раздел не найден. Попробуйте снова.", KeyboardFactory.createSectionsKeyboard(sectionService.getAllSections()));
         }
     }
 
@@ -154,13 +155,13 @@ public class CommonCallbackHandler extends CallbackApi {
 
             context.setCurrentProject(project);
 
-            vkClient.sendMessageWithKeyboard(userId, "Введи свой вопрос по проекту", vkClient.createBackButtonKeyboard());
+            vkClient.sendMessageWithKeyboard(userId, "Введи свой вопрос по проекту", KeyboardFactory.createBackButtonKeyboard());
             context.setState(UserState.ASKING_QUESTION);
 
         } catch (NumberFormatException e) {
-            vkClient.sendMessageWithKeyboard(userId, "Некорректный ввод. Введите номер нужного проекта.", vkClient.createBackButtonKeyboard());
+            vkClient.sendMessageWithKeyboard(userId, "Некорректный ввод. Введите номер нужного проекта.", KeyboardFactory.createBackButtonKeyboard());
         } catch (RuntimeException e) {
-            vkClient.sendMessageWithKeyboard(userId, "Такой проект не найден. Выберите проект из списка.", vkClient.createBackButtonKeyboard());
+            vkClient.sendMessageWithKeyboard(userId, "Такой проект не найден. Выберите проект из списка.", KeyboardFactory.createBackButtonKeyboard());
         }
     }
 
@@ -215,7 +216,7 @@ public class CommonCallbackHandler extends CallbackApi {
 
         String response = yandexGptAskingClient.sendQuestion(prompt);
         vkClient.sendMessage(userId, response);
-        vkClient.sendMessageWithKeyboard(userId, "Ты получил ответ на свой вопрос?", vkClient.createYesNoKeyboard());
+        vkClient.sendMessageWithKeyboard(userId, "Ты получил ответ на свой вопрос?", KeyboardFactory.createYesNoKeyboard());
         userQuestions.put(userId, project.getName() + ": " + userInput);
         context.setState(UserState.YES_NO);
     }
@@ -224,7 +225,7 @@ public class CommonCallbackHandler extends CallbackApi {
         long userId = context.getUserId();
         context.reset();
         userQuestions.remove(userId);
-        vkClient.sendMessageWithKeyboard(userId, "Выбери опцию", vkClient.createMainMenuKeyboard());
+        vkClient.sendMessageWithKeyboard(userId, "Выбери опцию", KeyboardFactory.createMainMenuKeyboard());
     }
 
     private void handleUserQuestion(String userInput, UserContext context) {
@@ -234,7 +235,7 @@ public class CommonCallbackHandler extends CallbackApi {
                 .orElse(UNKNOWN_QUESTION);
 
         vkClient.sendMessage(userId, response);
-        vkClient.sendMessageWithKeyboard(userId, "Ты получил ответ на свой вопрос?", vkClient.createYesNoKeyboard());
+        vkClient.sendMessageWithKeyboard(userId, "Ты получил ответ на свой вопрос?", KeyboardFactory.createYesNoKeyboard());
         userQuestions.put(userId,  userInput);
         context.setState(UserState.YES_NO);
     }
@@ -249,7 +250,7 @@ public class CommonCallbackHandler extends CallbackApi {
         } else if ("Назад".equalsIgnoreCase(userInput)) {
             handleBackAction(context);
         } else {
-            vkClient.sendMessageWithKeyboard(userId, "Выберите да или нет", vkClient.createMainMenuKeyboard());
+            vkClient.sendMessageWithKeyboard(userId, "Выберите да или нет", KeyboardFactory.createMainMenuKeyboard());
         }
     }
 
