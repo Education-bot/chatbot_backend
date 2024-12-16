@@ -17,7 +17,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Build with Gradle Wrapper
-        run: ./gradlew build
+        run: ./gradlew bootJar
 
       - name: Login to Yandex Cloud Container Registry
         id: login-cr
