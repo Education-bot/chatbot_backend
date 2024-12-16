@@ -1,5 +1,6 @@
 # Чат-бот VK для сообщества VK Education Projects
 
+[![Deploy](https://img.shields.io/badge/Run-Deploy-blue?logo=github)](https://github.com/Education-bot/chatbot_backend/actions/workflows/deploy-image.yml)
 
 ## Быстрые ссылки
 Документы:

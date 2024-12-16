@@ -1,14 +1,23 @@
 name: Build Docker Image and push to Yandex Cloud
 
-on: push
+on:
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Reason for Deployment'
+        required: true
 
 jobs:
-  build:
+  deployment:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Echo input
+        run: 'echo "Deployment Reason: ${{ github.event.inputs.reason }}"'
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4
@@ -34,21 +43,21 @@ jobs:
           docker build -t cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG -t cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:latest .
           docker push cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:latest
 
-      - name: Deploy to yCloud
-        id: deploy-coi
-        uses: yc-actions/yc-coi-deploy@v2
-        env:
-          CR_REGISTRY: crpedt3c6ei2sjstcjin
-          CR_REPOSITORY: education-bot
-          IMAGE_TAG: ${{ github.sha }}
-        with:
-          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
-          folder-id: ${{ secrets.YC_FOLDER_ID }}
-          vm-name: ${{ secrets.YC_VM_NAME }}
-          vm-service-account-id: ${{ secrets.YC_SERVICE_ACCOUNT_ID }}
-          vm-cores: 2
-          vm-memory: 2Gb
-          vm-core-fraction: 100
-          vm-subnet-id: ${{ secrets.YC_SUBNET_ID}}
-          user-data-path: './user-data.yaml'
-          docker-compose-path: './docker-compose.yaml'
+#      - name: Deploy to yCloud
+#        id: deploy-coi
+#        uses: yc-actions/yc-coi-deploy@v2
+#        env:
+#          CR_REGISTRY: crpedt3c6ei2sjstcjin
+#          CR_REPOSITORY: education-bot
+#          IMAGE_TAG: ${{ github.sha }}
+#        with:
+#          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+#          folder-id: ${{ secrets.YC_FOLDER_ID }}
+#          vm-name: ${{ secrets.YC_VM_NAME }}
+#          vm-service-account-id: ${{ secrets.YC_SERVICE_ACCOUNT_ID }}
+#          vm-cores: 2
+#          vm-memory: 2Gb
+#          vm-core-fraction: 100
+#          vm-subnet-id: ${{ secrets.YC_SUBNET_ID}}
+#          user-data-path: './user-data.yaml'
+#          docker-compose-path: './docker-compose.yaml'
