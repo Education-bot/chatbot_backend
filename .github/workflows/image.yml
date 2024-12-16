@@ -31,7 +31,6 @@ jobs:
           CR_REPOSITORY: education-bot
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          cp ./build-artifacts/education-bot.jar ./app.jar
           docker build -t cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG .
           docker push cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG
 
