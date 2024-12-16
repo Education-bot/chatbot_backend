@@ -30,7 +30,7 @@ jobs:
 
       - name: Extract current date
         id: vars
-        run: echo "$(date +'%Y-%m-%d-%s')" >> "$IMAGE_TAG"
+        run: export "$IMAGE_TAG=$(date +'%Y-%m-%d-%s')"
 
       - name: Build, tag, and push image to Yandex Cloud Container Registry
         env:
