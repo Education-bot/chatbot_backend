@@ -1,11 +1,6 @@
 name: Build Docker Image and push to Yandex Cloud
 
-on:
-  workflow_dispatch:
-    inputs:
-      reason:
-        description: 'Reason for Deployment'
-        required: true
+on: push
 
 jobs:
   deployment:
@@ -41,7 +36,7 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -t cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG -t cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:latest .
-          docker push cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:latest
+          docker push cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:latest
 
 #      - name: Deploy to yCloud
 #        id: deploy-coi
