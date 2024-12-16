@@ -8,7 +8,7 @@ import com.vk.api.sdk.objects.callback.MessageReply;
 import com.vk.api.sdk.objects.callback.messages.CallbackMessage;
 import com.vk.education_bot.client.KeyboardFactory;
 import com.vk.education_bot.client.VkClient;
-import com.vk.education_bot.client.YandexGptAskingClient;
+import com.vk.education_bot.client.YandexGptClient;
 import com.vk.education_bot.configuration.BotProperties;
 import com.vk.education_bot.entity.Project;
 import com.vk.education_bot.entity.Question;
@@ -45,18 +45,18 @@ public class CommonCallbackHandler extends CallbackApi {
     private final UnknownQuestionService unknownQuestionService;
 
     private final VkClient vkClient;
-    private final YandexGptAskingClient yandexGptAskingClient;
+    private final YandexGptClient yandexGptClient;
     private final QuestionClassifier questionClassifier;
 
-    public CommonCallbackHandler(BotProperties botProperties, VkClient vkClient, QuestionService questionService, SectionService sectionService, YandexGptAskingClient yandexGptAskingClient, QuestionClassifier questionClassifier, UnknownQuestionService unknownQuestionService) {
+    public CommonCallbackHandler(BotProperties botProperties, VkClient vkClient, QuestionService questionService, SectionService sectionService, QuestionClassifier questionClassifier, UnknownQuestionService unknownQuestionService, YandexGptClient yandexGptClient) {
         super(botProperties.confirmationCode());
         this.vkClient = vkClient;
         this.botProperties = botProperties;
         this.questionService = questionService;
         this.sectionService = sectionService;
-        this.yandexGptAskingClient = yandexGptAskingClient;
         this.unknownQuestionService = unknownQuestionService;
         this.questionClassifier = questionClassifier;
+        this.yandexGptClient = yandexGptClient;
     }
 
     @Override
@@ -214,7 +214,7 @@ public class CommonCallbackHandler extends CallbackApi {
                 userInput
         );
 
-        String response = yandexGptAskingClient.sendQuestion(prompt);
+        String response = yandexGptClient.sendQuestion(prompt);
         vkClient.sendMessage(userId, response);
         vkClient.sendMessageWithKeyboard(userId, "Ты получил ответ на свой вопрос?", KeyboardFactory.createYesNoKeyboard());
         userQuestions.put(userId, project.getName() + ": " + userInput);
