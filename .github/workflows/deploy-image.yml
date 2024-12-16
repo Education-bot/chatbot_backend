@@ -1,10 +1,17 @@
 name: Build Docker Image and push to Yandex Cloud
 
-on: push
+on:
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Reason for building'
+        required: false
 
 jobs:
-  deployment:
+  building:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
 
     steps:
       - name: Checkout repository
