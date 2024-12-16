@@ -30,7 +30,7 @@ jobs:
 
       - name: Calculate IMAGE_TAG for image
         id: vars
-        run: export "IMAGE_TAG=$(date +'%Y-%m-%d-%s')"
+        run: echo "IMAGE_TAG=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
 
       - name: Build, tag, and push image to Yandex Cloud Container Registry
         env:
@@ -47,7 +47,7 @@ jobs:
 #        env:
 #          CR_REGISTRY: crpedt3c6ei2sjstcjin
 #          CR_REPOSITORY: education-bot
-#          IMAGE_TAG: ${{ github.sha }}
+#          IMAGE_TAG: ${{ env.IMAGE_TAG }}
 #        with:
 #          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
 #          folder-id: ${{ secrets.YC_FOLDER_ID }}
