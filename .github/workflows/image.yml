@@ -27,7 +27,7 @@ jobs:
 
       - name: Build, tag, and push image to Yandex Cloud Container Registry
         env:
-          CR_REGISTRY: crprsopobhp5th379noj
+          CR_REGISTRY: crpedt3c6ei2sjstcjin
           CR_REPOSITORY: education-bot
           IMAGE_TAG: ${{ github.sha }}
         run: |
@@ -38,7 +38,7 @@ jobs:
         id: deploy-coi
         uses: yc-actions/yc-coi-deploy@v2
         env:
-          CR_REGISTRY: crprsopobhp5th379noj
+          CR_REGISTRY: crpedt3c6ei2sjstcjin
           CR_REPOSITORY: education-bot
           IMAGE_TAG: ${{ github.sha }}
         with:
