@@ -1,10 +1,6 @@
-name: Build Docker Image
+name: Build Docker Image and push to Yandex Cloud
 
-on:
-  workflow_run:
-    workflows: [ "Java CI with Gradle" ]
-    types:
-      - completed
+on: push
 
 jobs:
   build:
@@ -44,6 +40,7 @@ jobs:
           COPY ./build-artifacts/education-bot.jar ./app.jar
           docker build -t cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG .
           docker push cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG
+
       - name: Deploy to yCloud
         id: deploy-coi
         uses: yc-actions/yc-coi-deploy@v2
