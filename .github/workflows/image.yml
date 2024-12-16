@@ -11,6 +11,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Build with Gradle Wrapper
+        run: ./gradlew build
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4
@@ -50,4 +61,4 @@ jobs:
           vm-core-fraction: 100
           vm-subnet-id: ${{ secrets.YC_SUBNET_ID}}
           user-data-path: './user-data.yaml'
-          docker-compose-path: './docker-compose-prod.yaml'
+          docker-compose-path: './docker-compose.yaml'

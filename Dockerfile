@@ -3,7 +3,7 @@
 ################################################################################
 
 # Create a stage for resolving and downloading dependencies.
-FROM gradle:8.10-jdk21-alpine as deps
+FROM gradle:8.10-jdk21-alpine AS deps
 
 WORKDIR /build
 
