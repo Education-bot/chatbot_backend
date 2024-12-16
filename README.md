@@ -1,8 +1,10 @@
 # Чат-бот VK для сообщества VK Education Projects
 
+## Быстрые ссылки
+
 [![Deploy](https://img.shields.io/badge/Run-Deploy-blue?logo=github)](https://github.com/Education-bot/chatbot_backend/actions/workflows/deploy-image.yml)
 
-## Быстрые ссылки
+
 Документы:
 - [Ссылка на сгенерированный READ.ME](https://education-bot.github.io/chatbot_backend/) 
 - [План проекта - open Project](https://bot.openproject.com/projects/demo-project/gantt?query_props=%7B%22c%22%3A%5B%22id%22%2C%22type%22%2C%22subject%22%2C%22status%22%2C%22startDate%22%2C%22dueDate%22%2C%22duration%22%5D%2C%22hi%22%3Atrue%2C%22g%22%3A%22%22%2C%22is%22%3Atrue%2C%22tv%22%3Atrue%2C%22tll%22%3A%22%7B%5C%22left%5C%22%3A%5C%22startDate%5C%22%2C%5C%22right%5C%22%3A%5C%22dueDate%5C%22%2C%5C%22farRight%5C%22%3A%5C%22subject%5C%22%7D%22%2C%22tzl%22%3A%22auto%22%2C%22hla%22%3A%5B%22status%22%2C%22priority%22%2C%22dueDate%22%5D%2C%22t%22%3A%22startDate%3Aasc%22%2C%22f%22%3A%5B%7B%22n%22%3A%22status%22%2C%22o%22%3A%22*%22%2C%22v%22%3A%5B%5D%7D%5D%2C%22ts%22%3A%22PT0S%22%2C%22pp%22%3A20%2C%22pa%22%3A1%7D&name=all_open)
