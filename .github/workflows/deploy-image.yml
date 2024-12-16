@@ -30,7 +30,7 @@ jobs:
 
       - name: Calculate IMAGE_TAG for image
         id: vars
-        run: echo "IMAGE_TAG=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
+        run: echo "IMAGE_TAG=$(date +'%Y-%m-%d-%s')" >> $GITHUB_ENV
 
       - name: Build, tag, and push image to Yandex Cloud Container Registry
         env:
