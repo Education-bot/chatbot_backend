@@ -30,15 +30,16 @@ jobs:
 
       - name: Extract current date
         id: vars
-        run: echo "$(date +'%Y%-m%-d')" >> $IMAGE_TAG
+        run: echo "$(date +'%Y-%m-%d-%s')" >> $IMAGE_TAG
 
       - name: Build, tag, and push image to Yandex Cloud Container Registry
         env:
           CR_REGISTRY: crpedt3c6ei2sjstcjin
           CR_REPOSITORY: education-bot
         run: |
-          docker build -t cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG -t cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:latest .
-          docker push cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:latest
+          docker build -t cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:${{ env.IMAGE_TAG }} -t cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:latest .
+          docker push cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:${{ env.IMAGE_TAG }}
+          docker push cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:latest
 
 #      - name: Deploy to yCloud
 #        id: deploy-coi
