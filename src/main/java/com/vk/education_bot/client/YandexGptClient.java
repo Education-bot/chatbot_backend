@@ -5,6 +5,8 @@ import com.vk.education_bot.dto.question.ProjectQuestionGptRequest;
 import com.vk.education_bot.dto.question.ProjectQuestionGptResponse;
 import com.vk.education_bot.dto.question.QuestionPrediction;
 import com.vk.education_bot.dto.question.QuestionPredictionRequest;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -12,6 +14,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.function.Supplier;
 
 @Slf4j
 @Component
@@ -23,7 +26,15 @@ public class YandexGptClient {
     private final static String CLS_TASK_URI = "/foundationModels/v1/fewShotTextClassification";
     private final static String GPT_TASK_URI = "/foundationModels/v1/completion";
     private final static String CLS_TASK_DESCRIPTION = "Question classification";
-    private final static String GPT_TASK_DESCRIPTION = "Тебе дана информация о проекте и в конце вопрос к нему. Ответь на вопрос";
+
+    @Getter
+    @AllArgsConstructor
+    public enum GptTaskDescription {
+        ANSWER_ABOUT_PROJECT("Тебе дана информация о проекте и в конце вопрос к нему. Ответь на вопрос"),
+        COMMON_ANSWER("Ты бот, который помогает студентам работающим над проектами VK Education Projects. Ответь на заданный студентом вопрос.");
+
+        private final String text;
+    }
 
     private final WebClient webClient;
     private final String token;
@@ -37,45 +48,21 @@ public class YandexGptClient {
 
     public QuestionPrediction classifyQuestion(List<String> labels, String question) {
         log.info("Testing request: {}", question);
-        return webClient.post()
+        return wrapCall(() -> webClient.post()
                 .uri(CLS_TASK_URI)
                 .accept(MediaType.APPLICATION_JSON)
                 .acceptCharset(StandardCharsets.UTF_8)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", token)
-                .bodyValue(buildRequest(labels, question))
+                .bodyValue(buildQuestionClassificationRequest(labels, question))
                 .retrieve()
                 .bodyToMono(QuestionPrediction.class)
-                .block();
+                .block());
     }
 
-    private QuestionPredictionRequest buildRequest(List<String> labels, String question) {
-        return new QuestionPredictionRequest(
-                CLS_URI_TEMPLATE.formatted(yandexGptProperties.folderId()),
-                CLS_TASK_DESCRIPTION,
-                labels,
-                question
-        );
-    }
-
-    public String sendQuestion(String prompt) {
+    public String generateAnswer(String prompt, GptTaskDescription taskDescription) {
         log.info("Sending question to YandexGPT: {}", prompt);
-        ProjectQuestionGptRequest.CompletionOptions completionOptions = new ProjectQuestionGptRequest.CompletionOptions(
-                false, // stream
-                0.1,   // temperature
-                "1000" // maxTokens
-        );
-
-        List<ProjectQuestionGptRequest.Message> messages = List.of(
-                new ProjectQuestionGptRequest.Message("system", GPT_TASK_DESCRIPTION),
-                new ProjectQuestionGptRequest.Message("user", prompt)
-        );
-
-        ProjectQuestionGptRequest request = new ProjectQuestionGptRequest(
-                GPT_URI_TEMPLATE.formatted(yandexGptProperties.folderId()),
-                completionOptions,
-                messages
-        );
+        ProjectQuestionGptRequest request = buildAnswerCompletionRequest(prompt, taskDescription);
 
         ProjectQuestionGptResponse response = webClient.post()
                 .uri(GPT_TASK_URI)
@@ -96,4 +83,39 @@ public class YandexGptClient {
         return response.result().alternatives().getFirst().message().text();
     }
 
+    private ProjectQuestionGptRequest buildAnswerCompletionRequest(String prompt, GptTaskDescription taskDescription) {
+        ProjectQuestionGptRequest.CompletionOptions completionOptions = new ProjectQuestionGptRequest.CompletionOptions(
+                false, // stream
+                0.1,   // temperature
+                "1000" // maxTokens
+        );
+
+        List<ProjectQuestionGptRequest.Message> messages = List.of(
+                new ProjectQuestionGptRequest.Message("system", taskDescription.getText()),
+                new ProjectQuestionGptRequest.Message("user", prompt)
+        );
+
+        return new ProjectQuestionGptRequest(
+                GPT_URI_TEMPLATE.formatted(yandexGptProperties.folderId()),
+                completionOptions,
+                messages
+        );
+    }
+
+    private QuestionPredictionRequest buildQuestionClassificationRequest(List<String> labels, String question) {
+        return new QuestionPredictionRequest(
+                CLS_URI_TEMPLATE.formatted(yandexGptProperties.folderId()),
+                CLS_TASK_DESCRIPTION,
+                labels,
+                question
+        );
+    }
+
+    private <T> T wrapCall(Supplier<T> supplier) {
+        try {
+            return supplier.get();
+        } catch (Exception e) {
+            throw new RuntimeException("Api error", e);
+        }
+    }
 }
