@@ -4,6 +4,7 @@ import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.GroupActor;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
+import com.vk.api.sdk.objects.messages.Keyboard;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -34,4 +35,19 @@ public class VkClient {
             throw new RuntimeException(e);
         }
     }
+
+    public void sendMessageWithKeyboard(long userId, String message, Keyboard keyboard) {
+        try {
+            vkApiClient.messages()
+                    .sendDeprecated(groupActor)
+                    .userId(userId)
+                    .message(message)
+                    .keyboard(keyboard)
+                    .randomId(ThreadLocalRandom.current().nextInt())
+                    .execute();
+        } catch (ApiException | ClientException e) {
+            log.error("Error sending message with keyboard to user {}", userId, e);
+        }
+    }
+
 }
