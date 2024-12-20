@@ -21,5 +21,4 @@ properties:
     supportUserId: ${SUPPORT_USER_ID}
   yandex-gpt:
     folderId: ${YC_FOLDER_ID}
-    token: ${IAM_TOKEN}
     host: ${Y_GPT_HOST:https://llm.api.cloud.yandex.net}
