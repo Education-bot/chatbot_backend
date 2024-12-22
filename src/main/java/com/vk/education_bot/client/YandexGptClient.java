@@ -26,23 +26,23 @@ public class YandexGptClient {
     private final static String GPT_TASK_DESCRIPTION = "Тебе дана информация о проекте и в конце вопрос к нему. Ответь на вопрос";
 
     private final WebClient webClient;
-    private final String token;
+    private final MetadataClient metadataClient;
     private final YandexGptProperties yandexGptProperties;
 
     public YandexGptClient(YandexGptProperties yandexGptProperties) {
-        this.token = BEARER + yandexGptProperties.token();
         this.webClient = WebClient.create(yandexGptProperties.host());
+        this.metadataClient = new MetadataClient();
         this.yandexGptProperties = yandexGptProperties;
     }
 
-    public QuestionPrediction classifyQuestion(List<String> labels, String question) {
+    public QuestionPrediction classifyQuestion(List<String> labels, String question) throws Exception {
         log.info("Testing request: {}", question);
         return webClient.post()
                 .uri(CLS_TASK_URI)
                 .accept(MediaType.APPLICATION_JSON)
                 .acceptCharset(StandardCharsets.UTF_8)
                 .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", token)
+                .header("Authorization", BEARER + metadataClient.getToken())
                 .bodyValue(buildRequest(labels, question))
                 .retrieve()
                 .bodyToMono(QuestionPrediction.class)
@@ -77,15 +77,20 @@ public class YandexGptClient {
                 messages
         );
 
-        ProjectQuestionGptResponse response = webClient.post()
-                .uri(GPT_TASK_URI)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", token)
-                .bodyValue(request)
-                .retrieve()
-                .bodyToMono(ProjectQuestionGptResponse.class)
-                .block();
+        ProjectQuestionGptResponse response = null;
+        try {
+            response = webClient.post()
+                    .uri(GPT_TASK_URI)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header("Authorization", BEARER + metadataClient.getToken())
+                    .bodyValue(request)
+                    .retrieve()
+                    .bodyToMono(ProjectQuestionGptResponse.class)
+                    .block();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         if (response == null || response.result().alternatives().isEmpty()) {
             log.error("No response received from YandexGPT");

@@ -5,7 +5,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("properties.yandex-gpt")
 public record YandexGptProperties(
     String folderId,
-    String token,
     String host
 ) {
 }
