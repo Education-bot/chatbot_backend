@@ -29,11 +29,15 @@ public class QuestionClassifier {
                 .map(Question::getText)
                 .limit(MAX_LABELS)
                 .toList();
-        return yandexGptClient.classifyQuestion(allQuestionsText, questionText)
-                .predictions()
-                .stream()
-                .max(Comparator.comparingDouble(QuestionPrediction.Prediction::confidence))
-                .map(QuestionPrediction.Prediction::label)
-                .flatMap(questionRepository::findByText);
+        try {
+            return yandexGptClient.classifyQuestion(allQuestionsText, questionText)
+                    .predictions()
+                    .stream()
+                    .max(Comparator.comparingDouble(QuestionPrediction.Prediction::confidence))
+                    .map(QuestionPrediction.Prediction::label)
+                    .flatMap(questionRepository::findByText);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
