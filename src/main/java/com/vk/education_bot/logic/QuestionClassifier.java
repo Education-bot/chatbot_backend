@@ -23,7 +23,6 @@ public class QuestionClassifier {
     private final QuestionRepository questionRepository;
     private static final int BATCH_SIZE = 20;
     private static final String UNKNOWN_QUESTION = "Другое";
-    private final static String UNKNOWN_ANSWER = "Извини, я не понимаю твой вопрос.";
 
     // todo optimize and add cache
     public Optional<Question> classifyQuestion(@Nullable String questionText) {
