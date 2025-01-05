@@ -229,13 +229,12 @@ public class CommonCallbackHandler extends CallbackApi {
 
     private void handleUserQuestion(String userInput, UserContext context) {
         long userId = context.getUserId();
-        Optional<Question> question = questionClassifier.classifyQuestion(userInput);
-        String response = question
+        String response = questionClassifier.classifyQuestion(userInput)
                 .map(Question::getAnswer)
                 .orElseGet(() -> yandexGptClient.generateAnswer(userInput, YandexGptClient.GptTaskDescription.COMMON_ANSWER));
 
         vkClient.sendMessage(userId, response);
-        question.ifPresent(ignored -> vkClient.sendMessageWithKeyboard(userId, "Ты получил ответ на свой вопрос?", KeyboardFactory.createYesNoKeyboard()));
+        vkClient.sendMessageWithKeyboard(userId, "Ты получил ответ на свой вопрос?", KeyboardFactory.createYesNoKeyboard());
         userQuestions.put(userId,  userInput);
         context.setState(UserState.YES_NO);
     }

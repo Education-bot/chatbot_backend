@@ -22,10 +22,14 @@ public class MetadataClient {
     private String token;
     private Instant tokenExpirationTime;
 
-    public String getToken() throws Exception {
+    public String getToken() {
         if (token == null || Instant.now().isAfter(tokenExpirationTime)) {
             log.info("IAM token was expired, fetching a new one from metadata");
-            fetchNewToken();
+            try {
+                fetchNewToken();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
         return token;
     }
