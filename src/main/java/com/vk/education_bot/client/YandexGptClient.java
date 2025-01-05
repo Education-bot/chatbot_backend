@@ -1,6 +1,5 @@
 package com.vk.education_bot.client;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vk.education_bot.configuration.YandexGptProperties;
 import com.vk.education_bot.dto.question.ProjectQuestionGptRequest;
 import com.vk.education_bot.dto.question.ProjectQuestionGptResponse;
@@ -37,7 +36,7 @@ public class YandexGptClient {
 
     private final RateLimiter rateLimiter;
     private final WebClient webClient;
-    private final String token;
+    private final MetadataClient metadataClient;
     private final YandexGptProperties yandexGptProperties;
 
     @Getter
@@ -49,9 +48,9 @@ public class YandexGptClient {
         private final String text;
     }
 
-    public YandexGptClient(YandexGptProperties yandexGptProperties, ObjectMapper objectMapper) {
-        this.token = BEARER + yandexGptProperties.token();
+    public YandexGptClient(YandexGptProperties yandexGptProperties) {
         this.webClient = WebClient.create(yandexGptProperties.host());
+        this.metadataClient = new MetadataClient();
         this.yandexGptProperties = yandexGptProperties;
         this.rateLimiter = RateLimiter.of("y-gpt-rate-limiter",
                 RateLimiterConfig.custom()
@@ -66,7 +65,7 @@ public class YandexGptClient {
         return webClient.post()
                 .uri(CLS_TASK_URI)
                 .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", token)
+                .header("Authorization", BEARER + metadataClient.getToken())
                 .bodyValue(buildQuestionClassificationRequest(labels, question))
                 .retrieve()
                 .bodyToMono(QuestionPrediction.class)
@@ -81,7 +80,7 @@ public class YandexGptClient {
         ProjectQuestionGptResponse response = webClient.post()
                 .uri(GPT_TASK_URI)
                 .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", token)
+                .header("Authorization", BEARER + metadataClient.getToken())
                 .bodyValue(request)
                 .retrieve()
                 .bodyToMono(ProjectQuestionGptResponse.class)
