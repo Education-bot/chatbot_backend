@@ -8,6 +8,7 @@ import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -18,26 +19,38 @@ public class QuestionClassifier {
 
     private final YandexGptClient yandexGptClient;
     private final QuestionRepository questionRepository;
-    private static final int MAX_LABELS = 20;
+    private static final int BATCH_SIZE = 20;
+    private static final String UNKNOWN_QUESTION = "Другое";
 
     // todo optimize and add cache
     public Optional<Question> classifyQuestion(@Nullable String questionText) {
         if (questionText == null) {
             return Optional.empty();
         }
-        List<String> allQuestionsText = questionRepository.findAll().stream()
+        List<String> questions = questionRepository.findAll().stream()
                 .map(Question::getText)
-                .limit(MAX_LABELS)
                 .toList();
-        try {
-            return yandexGptClient.classifyQuestion(allQuestionsText, questionText)
-                    .predictions()
-                    .stream()
-                    .max(Comparator.comparingDouble(QuestionPrediction.Prediction::confidence))
-                    .map(QuestionPrediction.Prediction::label)
-                    .flatMap(questionRepository::findByText);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        return questionRepository.findByText(iterateQuestionsAndGetMatches(questions, questionText));
+    }
+
+    public String iterateQuestionsAndGetMatches(List<String> questions, String questionText) {
+        List<String> intermediateResult = new ArrayList<>();
+        for (int i = 0; i < questions.size(); i += BATCH_SIZE) {
+            intermediateResult.add(getMaxFitPrediction(questions.subList(i, Math.min(questions.size(), i + BATCH_SIZE)), questionText));
         }
+        if (intermediateResult.size() < BATCH_SIZE - 1) {
+            intermediateResult.add(UNKNOWN_QUESTION);
+            return getMaxFitPrediction(intermediateResult, questionText);
+        }
+        return iterateQuestionsAndGetMatches(intermediateResult, questionText);
+    }
+
+    public String getMaxFitPrediction(List<String> allQuestions, String questionText) {
+        return yandexGptClient.classifyQuestion(allQuestions, questionText)
+                .predictions()
+                .stream()
+                .max(Comparator.comparingDouble(QuestionPrediction.Prediction::confidence))
+                .map(QuestionPrediction.Prediction::label)
+                .orElseThrow(() -> new RuntimeException("Label not presented in response"));
     }
 }
