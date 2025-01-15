@@ -10,8 +10,8 @@ spring:
 
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:5432/edu_bot
-    username: postgres
-    password: postgres
+    username: ${DB_USER:admin}
+    password: ${DB_PWD:hackme}
 
 properties:
   vk:
