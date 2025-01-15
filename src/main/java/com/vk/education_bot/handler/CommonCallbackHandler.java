@@ -96,10 +96,11 @@ public class CommonCallbackHandler extends CallbackApi {
             case MAIN_MENU -> handleMainMenu(userInput, context);
             case SECTION_SELECTION -> handleSectionSelection(userInput, context);
             case PROJECT_SELECTION -> handleProjectSelection(userInput, context);
-            case ASKING_QUESTION -> handleAskingQuestion(userInput, context);
-            case ASKING_GENERAL_QUESTION -> handleUserQuestion(userInput, context);
+            case ASKING_PROJECT_QUESTION -> handleProjectQuestion(userInput, context);
+            case ASKING_GENERAL_QUESTION -> handleGeneralQuestion(userInput, context);
             case ADMIN -> handleAdminCommand(userInput, context);
-            case YES_NO -> handleYesNo(userInput, context);
+            case QUES_YES_NO -> handleQuesYesNo(userInput, context);
+            case PROJ_YES_NO -> handleProjYesNo(userInput, context);
             default -> vkClient.sendMessageWithKeyboard(userId, "Выбери опцию", KeyboardFactory.createMainMenuKeyboard());
         }
     }
@@ -155,7 +156,7 @@ public class CommonCallbackHandler extends CallbackApi {
             context.setCurrentProject(project);
 
             vkClient.sendMessageWithKeyboard(userId, "Введи свой вопрос по проекту", KeyboardFactory.createBackButtonKeyboard());
-            context.setState(UserState.ASKING_QUESTION);
+            context.setState(UserState.ASKING_PROJECT_QUESTION);
 
         } catch (NumberFormatException e) {
             vkClient.sendMessageWithKeyboard(userId, "Некорректный ввод. Введите номер нужного проекта.", KeyboardFactory.createBackButtonKeyboard());
@@ -164,7 +165,7 @@ public class CommonCallbackHandler extends CallbackApi {
         }
     }
 
-    private void handleAskingQuestion(String userInput, UserContext context) {
+    private void handleProjectQuestion(String userInput, UserContext context) {
         long userId = context.getUserId();
         Project project = context.getCurrentProject();
 
@@ -217,7 +218,43 @@ public class CommonCallbackHandler extends CallbackApi {
         vkClient.sendMessage(userId, response);
         vkClient.sendMessageWithKeyboard(userId, "Ты получил ответ на свой вопрос?", KeyboardFactory.createYesNoKeyboard());
         userQuestions.put(userId, project.getName() + ": " + userInput);
-        context.setState(UserState.YES_NO);
+        context.setState(UserState.PROJ_YES_NO);
+    }
+
+    private void handleQuesYesNo(String userInput, UserContext context) {
+        long userId = context.getUserId();
+        if ("Да".equalsIgnoreCase(userInput)) {
+            context.setState(UserState.ASKING_GENERAL_QUESTION);
+            userQuestions.remove(userId);
+            vkClient.sendMessageWithKeyboard(userId, "Если хочешь узнать что-то еще - спрашивай", KeyboardFactory.createBackButtonKeyboard());
+        } else if ("Нет".equalsIgnoreCase(userInput)) {
+            handleUnknownQuestion(userQuestions.get(userId), context);
+            context.setState(UserState.ASKING_GENERAL_QUESTION);
+            userQuestions.remove(userId);
+            vkClient.sendMessageWithKeyboard(userId, "Если хочешь узнать что-то еще - спрашивай", KeyboardFactory.createBackButtonKeyboard());
+        } else if ("Назад".equalsIgnoreCase(userInput)) {
+            handleBackAction(context);
+        } else {
+            vkClient.sendMessageWithKeyboard(userId, "Выберите да или нет", KeyboardFactory.createYesNoKeyboard());
+        }
+    }
+
+    private void handleProjYesNo(String userInput, UserContext context) {
+        long userId = context.getUserId();
+        if ("Да".equalsIgnoreCase(userInput)) {
+            context.setState(UserState.ASKING_PROJECT_QUESTION);
+            userQuestions.remove(userId);
+            vkClient.sendMessageWithKeyboard(userId, "Если хочешь узнать что-то еще по проекту - спрашивай", KeyboardFactory.createBackButtonKeyboard());
+        } else if ("Нет".equalsIgnoreCase(userInput)) {
+            handleUnknownQuestion(userQuestions.get(userId), context);
+            context.setState(UserState.ASKING_PROJECT_QUESTION);
+            userQuestions.remove(userId);
+            vkClient.sendMessageWithKeyboard(userId, "Если хочешь узнать что-то еще по проекту - спрашивай", KeyboardFactory.createBackButtonKeyboard());
+        } else if ("Назад".equalsIgnoreCase(userInput)) {
+            handleBackAction(context);
+        } else {
+            vkClient.sendMessageWithKeyboard(userId, "Выберите да или нет", KeyboardFactory.createMainMenuKeyboard());
+        }
     }
 
     private void handleBackAction(UserContext context) {
@@ -227,7 +264,7 @@ public class CommonCallbackHandler extends CallbackApi {
         vkClient.sendMessageWithKeyboard(userId, "Выбери опцию", KeyboardFactory.createMainMenuKeyboard());
     }
 
-    private void handleUserQuestion(String userInput, UserContext context) {
+    private void handleGeneralQuestion(String userInput, UserContext context) {
         long userId = context.getUserId();
         String response = questionClassifier.classifyQuestion(userInput)
                 .map(Question::getAnswer)
@@ -236,21 +273,7 @@ public class CommonCallbackHandler extends CallbackApi {
         vkClient.sendMessage(userId, response);
         vkClient.sendMessageWithKeyboard(userId, "Ты получил ответ на свой вопрос?", KeyboardFactory.createYesNoKeyboard());
         userQuestions.put(userId,  userInput);
-        context.setState(UserState.YES_NO);
-    }
-
-    private void handleYesNo(String userInput, UserContext context) {
-        long userId = context.getUserId();
-        if ("Да".equalsIgnoreCase(userInput)) {
-            handleBackAction(context);
-        } else if ("Нет".equalsIgnoreCase(userInput)) {
-            handleUnknownQuestion(userQuestions.get(userId), context);
-            handleBackAction(context);
-        } else if ("Назад".equalsIgnoreCase(userInput)) {
-            handleBackAction(context);
-        } else {
-            vkClient.sendMessageWithKeyboard(userId, "Выберите да или нет", KeyboardFactory.createMainMenuKeyboard());
-        }
+        context.setState(UserState.QUES_YES_NO);
     }
 
     private void handleUnknownQuestion(String userInput, UserContext context) {
