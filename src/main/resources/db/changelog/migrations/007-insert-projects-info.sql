@@ -1113,3 +1113,5 @@ UPDATE project SET section_id = 4 WHERE id BETWEEN 26 AND 37;
 
 -- Привязка проектов к разделу "Универсальные навыки"
 UPDATE project SET section_id = 5 WHERE id BETWEEN 38 AND 52;
+
+ALTER SEQUENCE project_id_seq RESTART WITH 53;
