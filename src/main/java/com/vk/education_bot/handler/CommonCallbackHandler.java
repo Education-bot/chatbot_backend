@@ -33,7 +33,6 @@ import java.util.regex.Pattern;
 @Component
 public class CommonCallbackHandler extends CallbackApi {
 
-    private final static String UNKNOWN_QUESTION = "Извини, я не понимаю твой вопрос";
     private final static String EMPTY = "";
 
     private final Map<Long, UserContext> userContexts = new ConcurrentHashMap<>();
@@ -107,10 +106,10 @@ public class CommonCallbackHandler extends CallbackApi {
 
     private void handleMainMenu(String userInput, UserContext context) {
         long userId = context.getUserId();
-        if ("Задать общий вопрос" .equalsIgnoreCase(userInput)) {
+        if ("Задать общий вопрос".equalsIgnoreCase(userInput)) {
             vkClient.sendMessageWithKeyboard(userId, "Введи свой вопрос", KeyboardFactory.createBackButtonKeyboard());
             context.setState(UserState.ASKING_GENERAL_QUESTION);
-        } else if ("Вопрос по проекту" .equalsIgnoreCase(userInput)) {
+        } else if ("Вопрос по проекту".equalsIgnoreCase(userInput)) {
             List<Section> sections = sectionService.getAllSections();
             vkClient.sendMessageWithKeyboard(userId, "Выбери раздел", KeyboardFactory.createSectionsKeyboard(sections));
             context.setState(UserState.SECTION_SELECTION);
@@ -214,7 +213,7 @@ public class CommonCallbackHandler extends CallbackApi {
                 userInput
         );
 
-        String response = yandexGptClient.sendQuestion(prompt);
+        String response = yandexGptClient.generateAnswer(prompt, YandexGptClient.GptTaskDescription.ANSWER_ABOUT_PROJECT);
         vkClient.sendMessage(userId, response);
         vkClient.sendMessageWithKeyboard(userId, "Ты получил ответ на свой вопрос?", KeyboardFactory.createYesNoKeyboard());
         userQuestions.put(userId, project.getName() + ": " + userInput);
@@ -232,7 +231,7 @@ public class CommonCallbackHandler extends CallbackApi {
         long userId = context.getUserId();
         String response = questionClassifier.classifyQuestion(userInput)
                 .map(Question::getAnswer)
-                .orElse(UNKNOWN_QUESTION);
+                .orElseGet(() -> yandexGptClient.generateAnswer(userInput, YandexGptClient.GptTaskDescription.COMMON_ANSWER));
 
         vkClient.sendMessage(userId, response);
         vkClient.sendMessageWithKeyboard(userId, "Ты получил ответ на свой вопрос?", KeyboardFactory.createYesNoKeyboard());
