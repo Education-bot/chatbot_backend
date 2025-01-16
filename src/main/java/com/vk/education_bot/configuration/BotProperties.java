@@ -6,8 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public record BotProperties(
         long groupId,
         String confirmationCode,
-        String accessCode,
-        long supportUserId
+        String accessCode
 ) {
 
 }

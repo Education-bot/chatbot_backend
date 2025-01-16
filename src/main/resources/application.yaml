@@ -18,7 +18,6 @@ properties:
     confirmationCode: ${CONFIRMATION_CODE}
     groupId: ${GROUP_ID}
     accessCode: ${ACCESS_CODE}
-    supportUserId: ${SUPPORT_USER_ID}
   yandex-gpt:
     folderId: ${YC_FOLDER_ID}
     host: ${Y_GPT_HOST:https://llm.api.cloud.yandex.net}
