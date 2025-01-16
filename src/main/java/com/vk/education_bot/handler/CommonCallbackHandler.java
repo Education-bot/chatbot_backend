@@ -38,11 +38,6 @@ public class CommonCallbackHandler extends CallbackApi {
 
     private final static String EMPTY = "";
 
-    // Формат: /admin answer 1, 3, 10, 56, 101 "Текст вопроса" "Текст ответа"
-    private final static Pattern answerPattern = Pattern.compile("^answer\\s+([\\d,\\s]+)\\s+\"([^\"]+)\"\\s+\"([^\"]+)\"$");
-    // Формат: /admin delete 1, 3, 10, 56
-    private final static Pattern deletePattern = Pattern.compile("^delete\\s+([\\d,\\s]+)$");
-
     private final Map<Long, UserContext> userContexts = new ConcurrentHashMap<>();
     private final Map<Long, String> userQuestions = new ConcurrentHashMap<>();
 
@@ -83,6 +78,20 @@ public class CommonCallbackHandler extends CallbackApi {
             .getText())
             .orElse("");
         log.info("ПОЛУЧЕНО: {}", userInput);
+
+        String regex = "(?iu)(?:\\b[а-яё]?)" +
+                "(?:у|[нз]а|(?:хитро|не)?вз?[ыьъ]|с[ьъ]|(?:и|ра)[зс]ъ?|(?:о[тб]|п[оа]д)[ьъ]?|[а-яё]*?)?" +
+                "(?:[её]б(?!о[рй]|рач)|п[уа][цтс]|и[пб][ае][тцд][ьъ]|ху(?:[яйиеёюл]+)|бля(?:[дтц])?|заебал\\b)|" +
+                "(?:[нз]а|по|про|на|вы)?м[ао]нд[ауеиы]*|елд[ауые]|ля[тд]ь|(?:п[иеё]зд|ид[аое]?р|охую|бля[дтц]).*?" +
+                "|(?:\\bхуй.*|\\bзалуп.*|\\bбля.*|\\bпизд.*|\\bчлен.*|\\bсуч+к.*|\\bеба.*|\\bёб.*)";
+
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(userInput);
+
+        if (matcher.find()) {
+            vkClient.sendMessage(userId, "Так говорить некрасиво(");
+            return;
+        }
 
         UserContext context = userContexts.computeIfAbsent(userId, UserContext::new);
 
@@ -424,7 +433,7 @@ public class CommonCallbackHandler extends CallbackApi {
                     """;
 
 
-            vkClient.sendMessageWithKeyboard(userId, message.toString(), KeyboardFactory.createAdminBackButtonKeyboard());
+            vkClient.sendMessageWithKeyboard(userId, message, KeyboardFactory.createAdminBackButtonKeyboard());
             context.setState(UserState.ADMIN_NEW_PROJECT);
 
         } catch (Exception e) {
