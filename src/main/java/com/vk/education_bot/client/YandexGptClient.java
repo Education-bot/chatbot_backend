@@ -76,8 +76,8 @@ public class YandexGptClient {
 
     public String generateAnswer(String prompt, GptTaskDescription taskDescription) {
         log.info("Generate answer for promt: {}", prompt);
-        ProjectQuestionGptRequest request = buildAnswerCompletionRequest(prompt, taskDescription);
-        ProjectQuestionGptResponse response = webClient.post()
+        var request = buildAnswerCompletionRequest(prompt, taskDescription);
+        var response = webClient.post()
                 .uri(GPT_TASK_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", BEARER + metadataClient.getToken())
@@ -98,13 +98,13 @@ public class YandexGptClient {
     }
 
     private ProjectQuestionGptRequest buildAnswerCompletionRequest(String prompt, GptTaskDescription taskDescription) {
-        ProjectQuestionGptRequest.CompletionOptions completionOptions = new ProjectQuestionGptRequest.CompletionOptions(
+        var completionOptions = new ProjectQuestionGptRequest.CompletionOptions(
                 false, // stream
                 0.1,   // temperature
                 "1000" // maxTokens
         );
 
-        List<ProjectQuestionGptRequest.Message> messages = List.of(
+        var messages = List.of(
                 new ProjectQuestionGptRequest.Message("system", taskDescription.getText()),
                 new ProjectQuestionGptRequest.Message("user", prompt)
         );

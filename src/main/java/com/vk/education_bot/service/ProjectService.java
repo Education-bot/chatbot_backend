@@ -15,20 +15,6 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
 
-    /**
-     * Парсим строку, введённую администратором, в формат:
-     *    # Название
-     *    Многострочное описание названия
-     *    (можно несколько абзацев)
-     *    # Направление
-     *    Текст направления
-     *    ...
-     *
-     * Логика:
-     *  1. Разбиваем весь текст по "разделителям", где начинается "# ".
-     *  2. Для каждого куска: первая строка - заголовок (после "# "), всё остальное - содержимое.
-     *  3. Соответствие заголовков (в lowerCase) полям Project - через switch/case или Map.
-     */
     public Project parseProjectFromMessage(String message) {
         Project project = new Project();
 
@@ -96,9 +82,6 @@ public class ProjectService {
         return project;
     }
 
-    /**
-     * Безопасный метод парсинга Integer, чтобы не падать с исключением.
-     */
     private Integer safeParseInt(String value) {
         try {
             return Integer.parseInt(value.trim());
@@ -111,34 +94,18 @@ public class ProjectService {
         return projectRepository.save(project);
     }
 
-    /**
-     * Упрощённый метод «два в одном»:
-     * 1) Парсит проект из сообщения
-     * 2) Проставляет соответствующую секцию
-     * 3) Сохраняет в БД
-     */
     public Project parseAndAddProject(String adminMessage) {
-        Project project = parseProjectFromMessage(adminMessage);
+        var project = parseProjectFromMessage(adminMessage);
         return addProject(project);
     }
 
-    /**
-     * 4. Редактирование (обновление) уже существующего проекта.
-     *    - На вход подаётся ID проекта и новое описание (adminMessage).
-     *    - С помощью parseProjectFromMessage(...) получаем ОБНОВЛЁННЫЕ данные.
-     *    - Записываем их в существующий объект и сохраняем.
-     *
-     *    Если нужно только обновлять "описание" в широком смысле (то есть все поля),
-     *    то просто копируем все поля. Если хотите выбирать какие поля обновлять,
-     *    нужно добавить логику проверки.
-     */
+
     public Project parseAndUpdateProject(Long projectId, String adminMessage) {
-        Project existingProject = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RuntimeException("Project not found: " + projectId));
+        var existingProject = projectRepository.findById(projectId)
+            .orElseThrow(() -> new RuntimeException("Project not found: " + projectId));
 
-        Project parsedData = parseProjectFromMessage(adminMessage);
+        var parsedData = parseProjectFromMessage(adminMessage);
 
-        // Копируем все нужные поля. Можно написать вспомогательный метод или библиотеку-маппер.
         existingProject.setName(parsedData.getName());
         existingProject.setDirection(parsedData.getDirection());
         existingProject.setType(parsedData.getType());
@@ -162,115 +129,84 @@ public class ProjectService {
         return projectRepository.save(existingProject);
     }
 
-    /**
-     * 5. Возвращает полное текстовое описание проекта (String) в том же формате:
-     *    # Название
-     *    <значение>
-     *    # Направление
-     *    <значение>
-     *    ...
-     *    # Награды
-     *    <значение>
-     *
-     *    Это нужно, чтобы, например, вернуть администратору готовое описание.
-     */
     public String buildProjectDescription(Project project) {
-        StringBuilder sb = new StringBuilder();
+        var sb = new StringBuilder();
 
         sb.append("# Название\n")
-                .append(nullSafe(project.getName())).append("\n");
+            .append(nullSafe(project.getName())).append("\n");
 
         sb.append("# Направление\n")
-                .append(nullSafe(project.getDirection())).append("\n");
+            .append(nullSafe(project.getDirection())).append("\n");
 
         sb.append("# Тип (для чего подходит)\n")
-                .append(nullSafe(project.getType())).append("\n");
+            .append(nullSafe(project.getType())).append("\n");
 
         sb.append("# Минимальное число участников\n")
-                .append(project.getMinMembers() != null ? project.getMinMembers() : "").append("\n");
+            .append(project.getMinMembers() != null ? project.getMinMembers() : "").append("\n");
 
         sb.append("# Максимальное число участников\n")
-                .append(project.getMaxMembers() != null ? project.getMaxMembers() : "").append("\n");
+            .append(project.getMaxMembers() != null ? project.getMaxMembers() : "").append("\n");
 
         sb.append("# Цель\n")
-                .append(nullSafe(project.getGoal())).append("\n");
+            .append(nullSafe(project.getGoal())).append("\n");
 
         sb.append("# Описание\n")
-                .append(nullSafe(project.getDescription())).append("\n");
+            .append(nullSafe(project.getDescription())).append("\n");
 
         sb.append("# Примеры и материалы\n")
-                .append(nullSafe(project.getMaterials())).append("\n");
+            .append(nullSafe(project.getMaterials())).append("\n");
 
         sb.append("# Продающее описание\n")
-                .append(nullSafe(project.getSellingDescription())).append("\n");
+            .append(nullSafe(project.getSellingDescription())).append("\n");
 
         sb.append("# Алгоритм\n")
-                .append(nullSafe(project.getAlgorithm())).append("\n");
+            .append(nullSafe(project.getAlgorithm())).append("\n");
 
         sb.append("# Компетенции\n")
-                .append(nullSafe(project.getCompetencies())).append("\n");
+            .append(nullSafe(project.getCompetencies())).append("\n");
 
         sb.append("# Рекомендации\n")
-                .append(nullSafe(project.getRecommendations())).append("\n");
+            .append(nullSafe(project.getRecommendations())).append("\n");
 
         sb.append("# Сложность\n")
-                .append(nullSafe(project.getComplexity())).append("\n");
+            .append(nullSafe(project.getComplexity())).append("\n");
 
         sb.append("# Формат обучения\n")
-                .append(nullSafe(project.getStudyFormat())).append("\n");
+            .append(nullSafe(project.getStudyFormat())).append("\n");
 
         sb.append("# Трудоемкость (в часах)\n")
-                .append(nullSafe(project.getIntense())).append("\n");
+            .append(nullSafe(project.getIntense())).append("\n");
 
         sb.append("# Условия получения сертификата\n")
-                .append(nullSafe(project.getCertificateConditions())).append("\n");
+            .append(nullSafe(project.getCertificateConditions())).append("\n");
 
         sb.append("# Ожидаемый результат\n")
-                .append(nullSafe(project.getExpectedResult())).append("\n");
+            .append(nullSafe(project.getExpectedResult())).append("\n");
 
         sb.append("# Критерии оценивания\n")
-                .append(nullSafe(project.getGradingCriteria())).append("\n");
+            .append(nullSafe(project.getGradingCriteria())).append("\n");
 
         sb.append("# Награды\n")
-                .append(nullSafe(project.getBenefits())).append("\n");
+            .append(nullSafe(project.getBenefits())).append("\n");
 
         return sb.toString();
     }
 
-    /**
-     * Утилитный метод на всякий случай, чтобы не печатать null-значения буквально "null".
-     */
     private String nullSafe(String value) {
         return value == null ? "" : value;
     }
 
-    /**
-     * 6. Возвращает строку со всеми проектами в формате:
-     *    1. НазваниеПроекта1
-     *    2. НазваниеПроекта2
-     *    ...
-     */
     public String listAllProjectsAsString() {
         StringBuilder sb = new StringBuilder();
-        List<Project> projects = projectRepository.findAll();
+        var projects = projectRepository.findAll();
         projects.sort((o1, o2) -> (int) (o1.getId() - o2.getId()));
         for (Project project : projects) {
             sb.append(project.getId())
-                    .append(". ")
-                    .append(project.getName())
-                    .append("\n");
+                .append(". ")
+                .append(project.getName())
+                .append("\n");
         }
         return sb.toString();
-    }
-
-    public List<Long> getProjectIds() {
-        List<Project> projects = projectRepository.findAll();
-        List<Long> result = new ArrayList<>();
-        for (Project project : projects) {
-            result.add(project.getId());
-        }
-        result.sort((Comparator.comparingLong(o -> o)));
-        return result;
     }
 
     public List<Project> getProjects() {

@@ -8,5 +8,4 @@ import org.springframework.stereotype.Repository;
 public interface AdminRepository extends JpaRepository<Admin, Long> {
     boolean existsByVkId(Long vkId);
     Admin findByVkId(Long vkId);
-    void deleteAdminByVkId(Long vkId);
 }

@@ -1,6 +1,5 @@
 package com.vk.education_bot.configuration;
 
-import com.vk.api.sdk.client.TransportClient;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.GroupActor;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
@@ -14,7 +13,7 @@ public class VkApiConfiguration {
 
     @Bean
     public VkApiClient vkApiClient() {
-        TransportClient transportClient = HttpTransportClient.getInstance();
+        var transportClient = HttpTransportClient.getInstance();
         return new VkApiClient(transportClient);
     }
 

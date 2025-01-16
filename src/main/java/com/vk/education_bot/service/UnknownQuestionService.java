@@ -29,14 +29,6 @@ public class UnknownQuestionService {
         return unknownQuestionRepository.findAll();
     }
 
-    public Optional<UnknownQuestion> findByQuestionText(String questionText) {
-        return unknownQuestionRepository.findByQuestionText(questionText);
-    }
-
-    public void deleteByQuestionText(String questionText) {
-        unknownQuestionRepository.findByQuestionText(questionText)
-            .ifPresent(unknownQuestionRepository::delete);
-    }
 
     public List<UnknownQuestion> findAllByIds(List<Long> ids) {
         return unknownQuestionRepository.findAllById(ids);

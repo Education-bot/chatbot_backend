@@ -38,6 +38,14 @@ public class CommonCallbackHandler extends CallbackApi {
 
     private final static String EMPTY = "";
 
+    private static final Pattern adminPattern = Pattern.compile("^\\s*([\\d,\\s]+)\\s+\"([^\"]+)\"\\s+\"([^\"]+)\"$");
+    private static final Pattern curseWordsPattern = Pattern.compile("(?iu)(?:\\b[а-яё]?)" +
+        "(?:у|[нз]а|(?:хитро|не)?вз?[ыьъ]|с[ьъ]|(?:и|ра)[зс]ъ?|(?:о[тб]|п[оа]д)[ьъ]?|[а-яё]*?)?" +
+        "(?:[её]б(?!о[рй]|рач)|п[уа][цтс]|и[пб][ае][тцд][ьъ]|ху(?:[яйиеёюл]+)|бля(?:[дтц])?|заебал\\b)|" +
+        "(?:[нз]а|по|про|на|вы)?м[ао]нд[ауеиы]*|елд[ауые]|ля[тд]ь|(?:п[иеё]зд|ид[аое]?р|охую|бля[дтц]).*?" +
+        "|(?:хуй\\w*|залуп.*|\\bбля.*|\\bпизд.*|\\bчлен.*|\\bсуч+к.*|еба.*|\\bёб.*)");
+    private static final Pattern numberPattern = Pattern.compile("^\\s*([\\d,\\s]+)$");
+
     private final Map<Long, UserContext> userContexts = new ConcurrentHashMap<>();
     private final Map<Long, String> userQuestions = new ConcurrentHashMap<>();
 
@@ -73,27 +81,20 @@ public class CommonCallbackHandler extends CallbackApi {
             .getFromId())
             .orElseThrow(() -> new RuntimeException("UserId not presented"));
         // Сообщение от пользователя
-        String userInput = ofNullable(message.getObject()
+        var userInput = ofNullable(message.getObject()
             .getMessage()
             .getText())
-            .orElse("");
+            .orElse(EMPTY);
         log.info("ПОЛУЧЕНО: {}", userInput);
 
-        String regex = "(?iu)(?:\\b[а-яё]?)" +
-                "(?:у|[нз]а|(?:хитро|не)?вз?[ыьъ]|с[ьъ]|(?:и|ра)[зс]ъ?|(?:о[тб]|п[оа]д)[ьъ]?|[а-яё]*?)?" +
-                "(?:[её]б(?!о[рй]|рач)|п[уа][цтс]|и[пб][ае][тцд][ьъ]|ху(?:[яйиеёюл]+)|бля(?:[дтц])?|заебал\\b)|" +
-                "(?:[нз]а|по|про|на|вы)?м[ао]нд[ауеиы]*|елд[ауые]|ля[тд]ь|(?:п[иеё]зд|ид[аое]?р|охую|бля[дтц]).*?" +
-                "|(?:хуй\\w*|залуп.*|\\bбля.*|\\bпизд.*|\\bчлен.*|\\bсуч+к.*|еба.*|\\bёб.*)";
-
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(userInput);
+        var matcher = curseWordsPattern.matcher(userInput);
 
         if (matcher.find()) {
             vkClient.sendMessage(userId, "Так говорить некрасиво(");
             return;
         }
 
-        UserContext context = userContexts.computeIfAbsent(userId, UserContext::new);
+        var context = userContexts.computeIfAbsent(userId, UserContext::new);
 
         if ("Назад".equalsIgnoreCase(userInput) || "Начать".equalsIgnoreCase(userInput)) {
             handleBackAction(context);
@@ -106,7 +107,7 @@ public class CommonCallbackHandler extends CallbackApi {
             } else {
                 context.setState(UserState.ADMIN);
                 vkClient.sendMessageWithKeyboard(userId, "Ты вошел в режим администратора.",
-                        KeyboardFactory.createAdminKeyboard());
+                    KeyboardFactory.createAdminKeyboard());
                 KeyboardFactory.clearKeyboard();
             }
             return;
@@ -131,7 +132,7 @@ public class CommonCallbackHandler extends CallbackApi {
             case ADMIN_EDIT_PROJECT -> handleAdminEditProject(userInput, context);
             case ADMIN_ACCEPT_EDITED_PROJECT -> handleAdminAcceptEditedProject(userInput, context);
             default ->
-                    vkClient.sendMessageWithKeyboard(userId, "Выбери опцию", KeyboardFactory.createMainMenuKeyboard());
+                vkClient.sendMessageWithKeyboard(userId, "Выбери опцию", KeyboardFactory.createMainMenuKeyboard());
         }
     }
 
@@ -141,7 +142,7 @@ public class CommonCallbackHandler extends CallbackApi {
             vkClient.sendMessageWithKeyboard(userId, "Введи свой вопрос", KeyboardFactory.createBackButtonKeyboard());
             context.setState(UserState.ASKING_GENERAL_QUESTION);
         } else if ("Вопрос по проекту".equalsIgnoreCase(userInput)) {
-            List<Section> sections = sectionService.getAllSections();
+            var sections = sectionService.getAllSections();
             vkClient.sendMessageWithKeyboard(userId, "Выбери раздел", KeyboardFactory.createSectionsKeyboard(sections));
             context.setState(UserState.SECTION_SELECTION);
         } else {
@@ -152,20 +153,20 @@ public class CommonCallbackHandler extends CallbackApi {
     private void handleSectionSelection(String userInput, UserContext context) {
         long userId = context.getUserId();
         try {
-            Section section = sectionService.getAllSections().stream()
+            var section = sectionService.getAllSections().stream()
                 .filter(s -> s.getName().equalsIgnoreCase(userInput))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Section not found"));
 
             context.setCurrentSection(section);
 
-            List<Project> projects = section.getProjects();
-            StringBuilder projectListMessage = new StringBuilder("Выберите проект, введя его номер:\n");
-            for (Project project : projects) {
-                projectListMessage.append(project.getId()).append(". ").append(project.getName()).append("\n");
+            var projects = section.getProjects();
+            var projectsMessageBuilder = new StringBuilder("Выберите проект, введя его номер:\n");
+            for (var project : projects) {
+                projectsMessageBuilder.append(project.getId()).append(". ").append(project.getName()).append("\n");
             }
 
-            vkClient.sendMessageWithKeyboard(userId, projectListMessage.toString(), KeyboardFactory.createBackButtonKeyboard());
+            vkClient.sendMessageWithKeyboard(userId, projectsMessageBuilder.toString(), KeyboardFactory.createBackButtonKeyboard());
             context.setState(UserState.PROJECT_SELECTION);
 
         } catch (Exception e) {
@@ -178,7 +179,7 @@ public class CommonCallbackHandler extends CallbackApi {
         try {
             int projectId = Integer.parseInt(userInput);
 
-            Project project = context.getCurrentSection().getProjects().stream()
+            var project = context.getCurrentSection().getProjects().stream()
                 .filter(p -> p.getId() == projectId)
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Project not found"));
@@ -197,9 +198,9 @@ public class CommonCallbackHandler extends CallbackApi {
 
     private void handleAskingQuestion(String userInput, UserContext context) {
         long userId = context.getUserId();
-        Project project = context.getCurrentProject();
+        var project = context.getCurrentProject();
 
-        String prompt = String.format(
+        var prompt = String.format(
             """
                 Ответь на вопрос, используя информацию о проекте:
                 Название: %s
@@ -244,7 +245,7 @@ public class CommonCallbackHandler extends CallbackApi {
             userInput
         );
 
-        String response = yandexGptClient.generateAnswer(prompt, YandexGptClient.GptTaskDescription.ANSWER_ABOUT_PROJECT);
+        var response = yandexGptClient.generateAnswer(prompt, YandexGptClient.GptTaskDescription.ANSWER_ABOUT_PROJECT);
         vkClient.sendMessage(userId, response);
         vkClient.sendMessageWithKeyboard(userId, "Ты получил ответ на свой вопрос?", KeyboardFactory.createYesNoKeyboard());
         userQuestions.put(userId, project.getName() + ": " + userInput);
@@ -260,9 +261,9 @@ public class CommonCallbackHandler extends CallbackApi {
 
     private void handleUserQuestion(String userInput, UserContext context) {
         long userId = context.getUserId();
-        String response = questionClassifier.classifyQuestion(userInput)
-                .map(Question::getAnswer)
-                .orElseGet(() -> yandexGptClient.generateAnswer(userInput, YandexGptClient.GptTaskDescription.COMMON_ANSWER));
+        var response = questionClassifier.classifyQuestion(userInput)
+            .map(Question::getAnswer)
+            .orElseGet(() -> yandexGptClient.generateAnswer(userInput, YandexGptClient.GptTaskDescription.COMMON_ANSWER));
 
         vkClient.sendMessage(userId, response);
         vkClient.sendMessageWithKeyboard(userId, "Ты получил ответ на свой вопрос?", KeyboardFactory.createYesNoKeyboard());
@@ -309,18 +310,17 @@ public class CommonCallbackHandler extends CallbackApi {
     private void handleUnknownQuestion(String userInput, UserContext context) {
         long userId = context.getUserId();
         // Обработка неизвестного вопроса
-        String response = "Извини, я не понял твой вопрос. Я сообщу в поддержку о твоей проблеме.";
+        var response = "Извини, я не понял твой вопрос. Я сообщу в поддержку о твоей проблеме.";
         vkClient.sendMessage(userId, response);
 
         unknownQuestionService.saveUnknownQuestion(userId, userInput);
 
         // Уведомить поддержку
-        for (Long id : adminService.getAllAdminIds()) {
+        for (var id : adminService.getAllAdminIds()) {
             try {
-                vkClient.sendMessage(id,
-                        "Новый неизвестный вопрос: " + "\"" + userInput + "\". Нужно добавить ответ.");
+                vkClient.sendMessage(id, "Новый неизвестный вопрос: \"%s\". Нужно добавить ответ.".formatted(userInput));
             } catch (Exception e) {
-
+                //ignore
             }
         }
     }
@@ -338,33 +338,33 @@ public class CommonCallbackHandler extends CallbackApi {
         } else if (commandBody.startsWith("Ответить на вопрос")) {
             context.setState(UserState.ADMIN_ANSWER);
             vkClient.sendMessageWithKeyboard(userId, "Напиши на какой вопрос (или вопросы) ты хочешь ответить, " +
-                            "формулировку вопроса и ответ в формате: \n1, 3, 10, 56, 101 \"Текст вопроса\" \"Текст ответа\"",
-                    KeyboardFactory.createAdminBackButtonKeyboard());
+                    "формулировку вопроса и ответ в формате: \n1, 3, 10, 56, 101 \"Текст вопроса\" \"Текст ответа\"",
+                KeyboardFactory.createAdminBackButtonKeyboard());
         } else if (commandBody.startsWith("Удалить вопрос")) {
             context.setState(UserState.ADMIN_DELETE_Q);
             vkClient.sendMessageWithKeyboard(userId, "Перечисли номера вопросов, которые ты хочешь удалить, " +
-                            "в формате: \n1, 3, 10, 56, 101",
-                    KeyboardFactory.createAdminBackButtonKeyboard());
+                    "в формате: \n1, 3, 10, 56, 101",
+                KeyboardFactory.createAdminBackButtonKeyboard());
         } else if (commandBody.startsWith("Добавить админа")) {
             context.setState(UserState.ADMIN_ADD_ADMIN);
             vkClient.sendMessageWithKeyboard(userId, "Введи VK ID пользователя, которого ты хочешь сделать " +
-                    "администратором бота", KeyboardFactory.createAdminBackButtonKeyboard());
+                "администратором бота", KeyboardFactory.createAdminBackButtonKeyboard());
         } else if (commandBody.startsWith("Список админов")) {
-            StringBuilder sb = new StringBuilder();
-            List<Long> list = adminService.getAllAdminIds();
-            for (Long l : list) {
+            var sb = new StringBuilder();
+            var list = adminService.getAllAdminIds();
+            for (var l : list) {
                 sb.append("VK ID: ").append(l).append(". Профиль: https://vk.com/id").append(l.toString()).append("\n");
             }
             vkClient.sendMessage(userId, sb.toString());
         } else if (commandBody.startsWith("Удалить админа")) {
             context.setState(UserState.ADMIN_DELETE_ADMIN);
             vkClient.sendMessageWithKeyboard(userId, "Введи VK ID пользователя, у которого ты хочешь забрать админку",
-                    KeyboardFactory.createAdminBackButtonKeyboard());
+                KeyboardFactory.createAdminBackButtonKeyboard());
         } else if (commandBody.startsWith("Добавить проект")) {
             context.setState(UserState.ADMIN_SECTION_SELECTION);
-            List<Section> sections = sectionService.getAllSections();
+            var sections = sectionService.getAllSections();
             vkClient.sendMessageWithKeyboard(userId, "Выбери раздел, к которому будет относиться проект",
-                    KeyboardFactory.createAdminSectionsKeyboard(sections));
+                KeyboardFactory.createAdminSectionsKeyboard(sections));
         } else if (commandBody.startsWith("Изменить проект")) {
             context.setState(UserState.ADMIN_EDIT_PROJECT);
             vkClient.sendMessageWithKeyboard(context.getUserId(), "Выберите проект из списка и введите его номер\n" + projectService.listAllProjectsAsString(), KeyboardFactory.createAdminBackButtonKeyboard());
@@ -383,54 +383,54 @@ public class CommonCallbackHandler extends CallbackApi {
         }
         long userId = context.getUserId();
         try {
-            Section section = sectionService.getAllSections().stream()
-                    .filter(s -> s.getName().equalsIgnoreCase(userInput))
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException("Section not found"));
+            var section = sectionService.getAllSections().stream()
+                .filter(s -> s.getName().equalsIgnoreCase(userInput))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Section not found"));
 
             context.setCurrentSection(section);
 
-            String message = """
-                    Введи описание проекта в формате (скопируй и заполни шаблон):
-                    # Название
-                    Текст
-                    # Направление
-                    Текст
-                    # Тип (для чего подходит)
-                    Текст
-                    # Минимальное число участников
-                    1
-                    # Максимальное число участников
-                    3
-                    # Цель
-                    Текст
-                    # Описание
-                    Текст
-                    # Примеры и материалы
-                    Текст
-                    # Продающее описание
-                    Текст
-                    # Алгоритм
-                    Текст
-                    # Компетенции
-                    Текст
-                    # Рекомендации
-                    Текст
-                    # Сложность
-                    Текст
-                    # Формат обучения
-                    Текст
-                    # Трудоемкость (в часах)
-                    Текст
-                    # Условия получения сертификата
-                    Текст
-                    # Ожидаемый результат
-                    Текст
-                    # Критерии оценивания
-                    Текст
-                    # Награды
-                    Текст
-                    """;
+            var message = """
+                Введи описание проекта в формате (скопируй и заполни шаблон):
+                # Название
+                Текст
+                # Направление
+                Текст
+                # Тип (для чего подходит)
+                Текст
+                # Минимальное число участников
+                1
+                # Максимальное число участников
+                3
+                # Цель
+                Текст
+                # Описание
+                Текст
+                # Примеры и материалы
+                Текст
+                # Продающее описание
+                Текст
+                # Алгоритм
+                Текст
+                # Компетенции
+                Текст
+                # Рекомендации
+                Текст
+                # Сложность
+                Текст
+                # Формат обучения
+                Текст
+                # Трудоемкость (в часах)
+                Текст
+                # Условия получения сертификата
+                Текст
+                # Ожидаемый результат
+                Текст
+                # Критерии оценивания
+                Текст
+                # Награды
+                Текст
+                """;
 
 
             vkClient.sendMessageWithKeyboard(userId, message, KeyboardFactory.createAdminBackButtonKeyboard());
@@ -461,10 +461,10 @@ public class CommonCallbackHandler extends CallbackApi {
         try {
             int projectId = Integer.parseInt(userInput);
 
-            Project project = projectService.getProjects().stream()
-                    .filter(p -> p.getId() == projectId)
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException("Project not found"));
+            var project = projectService.getProjects().stream()
+                .filter(p -> p.getId() == projectId)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Project not found"));
             vkClient.sendMessageWithKeyboard(userId, "Вот текущее описание проекта:\n" + projectService.buildProjectDescription(project), KeyboardFactory.createAdminBackButtonKeyboard());
             handleAdminBackAction(context);
 
@@ -484,10 +484,10 @@ public class CommonCallbackHandler extends CallbackApi {
         try {
             int projectId = Integer.parseInt(userInput);
 
-            Project project = projectService.getProjects().stream()
-                    .filter(p -> p.getId() == projectId)
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException("Project not found"));
+            var project = projectService.getProjects().stream()
+                .filter(p -> p.getId() == projectId)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Project not found"));
             context.setAdminCurrentProject(project);
             vkClient.sendMessageWithKeyboard(userId, "Вот текущее описание проекта. Скопируй его и отредактируй нужные пункты\n" + projectService.buildProjectDescription(project), KeyboardFactory.createAdminBackButtonKeyboard());
             context.setState(UserState.ADMIN_ACCEPT_EDITED_PROJECT);
@@ -512,7 +512,7 @@ public class CommonCallbackHandler extends CallbackApi {
             return;
         }
         try {
-            Long id = Long.parseLong(userInput);
+            var id = Long.parseLong(userInput);
             if (adminService.checkAdmin(id)) {
                 vkClient.sendMessage(context.getUserId(), "Пользователь уже есть в списке администраторов");
                 return;
@@ -530,9 +530,7 @@ public class CommonCallbackHandler extends CallbackApi {
             return;
         }
         try {
-            System.out.println(userInput);
-            Long adminId = Long.parseLong(userInput);
-            System.out.println(adminId);
+            var adminId = Long.parseLong(userInput);
             if (!adminService.checkAdmin(adminId)) {
                 vkClient.sendMessage(context.getUserId(), "Администратор с таким ID не найден");
                 return;
@@ -546,14 +544,14 @@ public class CommonCallbackHandler extends CallbackApi {
 
     private void handleAdminShowAdminList(UserContext context) {
         long userId = context.getUserId();
-        List<UnknownQuestion> unknownQuestions = unknownQuestionService.getAllUnknownQuestions();
+        var unknownQuestions = unknownQuestionService.getAllUnknownQuestions();
         if (unknownQuestions.isEmpty()) {
             vkClient.sendMessage(userId, "Нет неизвестных вопросов.");
         } else {
-            StringBuilder sb = new StringBuilder("Список неизвестных вопросов:\n");
-            for (UnknownQuestion uq : unknownQuestions) {
-                sb.append("ID: ").append(uq.getId())
-                    .append(", Вопрос: ").append(uq.getQuestionText())
+            var sb = new StringBuilder("Список неизвестных вопросов:\n");
+            for (var unknownQuestion : unknownQuestions) {
+                sb.append("ID: ").append(unknownQuestion.getId())
+                    .append(", Вопрос: ").append(unknownQuestion.getQuestionText())
                     .append("\n");
             }
             vkClient.sendMessage(userId, sb.toString());
@@ -562,31 +560,28 @@ public class CommonCallbackHandler extends CallbackApi {
 
     private void handleAdminDelete(String commandBody, UserContext context) {
         long userId = context.getUserId();
-        Pattern pattern = Pattern.compile(
-                "^\\s*([\\d,\\s]+)$"
-        );
-        Matcher matcher = pattern.matcher(commandBody);
+        var matcher = numberPattern.matcher(commandBody);
         if (matcher.find()) {
-            String idsString = matcher.group(1).trim();
+            var idsString = matcher.group(1).trim();
             // Парсим IDs
-            List<Long> ids = Arrays.stream(idsString.split(","))
-                    .map(String::trim)
-                    .filter(s -> !s.isEmpty())
-                    .map(Long::valueOf)
-                    .toList();
+            var ids = Arrays.stream(idsString.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .map(Long::valueOf)
+                .toList();
             if (ids.isEmpty()) {
                 vkClient.sendMessage(userId, "Не указаны корректные ID вопросов.");
                 return;
             }
             // Получаем список неизвестных вопросов по указанным ID
-            List<UnknownQuestion> unknownQuestions = unknownQuestionService.findAllByIds(ids);
+            var unknownQuestions = unknownQuestionService.findAllByIds(ids);
             if (unknownQuestions.isEmpty()) {
                 vkClient.sendMessage(userId, "Не найдены неизвестные вопросы по указанным ID.");
                 return;
             }
             // Для каждого удаляемого вопроса отправляем уведомление пользователю
-            for (UnknownQuestion uq : unknownQuestions) {
-                vkClient.sendMessage(uq.getUserId(), "Твой вопрос снят с рассмотрения");
+            for (var unknownQuestion : unknownQuestions) {
+                vkClient.sendMessage(unknownQuestion.getUserId(), "Твой вопрос снят с рассмотрения");
             }
             // Удаляем выбранные вопросы из списка
             unknownQuestionService.deleteAll(unknownQuestions);
@@ -602,20 +597,17 @@ public class CommonCallbackHandler extends CallbackApi {
 
     private void handleAdminAnswer(String commandBody, UserContext context) {
         long userId = context.getUserId();
-        Pattern pattern = Pattern.compile(
-                "^\\s*([\\d,\\s]+)\\s+\"([^\"]+)\"\\s+\"([^\"]+)\"$"
-        );
-        Matcher matcher = pattern.matcher(commandBody);
+        Matcher matcher = adminPattern.matcher(commandBody);
         if (matcher.find()) {
-            String idsString = matcher.group(1).trim();
-            String newQuestionText = matcher.group(2);
-            String answerText = matcher.group(3);
+            var idsString = matcher.group(1).trim();
+            var newQuestionText = matcher.group(2);
+            var answerText = matcher.group(3);
             // Парсим IDs
-            List<Long> ids = Arrays.stream(idsString.split(","))
-                    .map(String::trim)
-                    .filter(s -> !s.isEmpty())
-                    .map(Long::valueOf)
-                    .toList();
+            var ids = Arrays.stream(idsString.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .map(Long::valueOf)
+                .toList();
             if (ids.isEmpty()) {
                 vkClient.sendMessage(userId, "Не указаны корректные ID вопросов.");
                 return;
@@ -626,7 +618,7 @@ public class CommonCallbackHandler extends CallbackApi {
                 return;
             }
             // Получаем список неизвестных вопросов по указанным ID
-            List<UnknownQuestion> unknownQuestions = unknownQuestionService.findAllByIds(ids);
+            var unknownQuestions = unknownQuestionService.findAllByIds(ids);
             if (unknownQuestions.isEmpty()) {
                 vkClient.sendMessage(userId, "Не найдены неизвестные вопросы по указанным ID.");
                 return;
@@ -658,11 +650,9 @@ public class CommonCallbackHandler extends CallbackApi {
     @Override
     public String parse(String json) {
         // Разбор входящего JSON и обработка событий
-        CallbackMessage callbackMessage = new GsonHolder()
+        var callbackMessage = new GsonHolder()
             .getGson()
             .fromJson(json, CallbackMessage.class);
-
-        System.out.println(callbackMessage.toString());
 
         if (callbackMessage.getType() == null) {
             return EMPTY;
