@@ -83,7 +83,7 @@ public class CommonCallbackHandler extends CallbackApi {
                 "(?:у|[нз]а|(?:хитро|не)?вз?[ыьъ]|с[ьъ]|(?:и|ра)[зс]ъ?|(?:о[тб]|п[оа]д)[ьъ]?|[а-яё]*?)?" +
                 "(?:[её]б(?!о[рй]|рач)|п[уа][цтс]|и[пб][ае][тцд][ьъ]|ху(?:[яйиеёюл]+)|бля(?:[дтц])?|заебал\\b)|" +
                 "(?:[нз]а|по|про|на|вы)?м[ао]нд[ауеиы]*|елд[ауые]|ля[тд]ь|(?:п[иеё]зд|ид[аое]?р|охую|бля[дтц]).*?" +
-                "|(?:\\bхуй.*|\\bзалуп.*|\\bбля.*|\\bпизд.*|\\bчлен.*|\\bсуч+к.*|\\bеба.*|\\bёб.*)";
+                "|(?:хуй\\w*|залуп.*|\\bбля.*|\\bпизд.*|\\bчлен.*|\\bсуч+к.*|еба.*|\\bёб.*)";
 
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(userInput);
@@ -353,7 +353,7 @@ public class CommonCallbackHandler extends CallbackApi {
             StringBuilder sb = new StringBuilder();
             List<Long> list = adminService.getAllAdminIds();
             for (Long l : list) {
-                sb.append(l.toString()).append("\n");
+                sb.append("VK ID: ").append(l).append(". Профиль: https://vk.com/id").append(l.toString()).append("\n");
             }
             vkClient.sendMessage(userId, sb.toString());
         } else if (commandBody.startsWith("Удалить админа")) {
