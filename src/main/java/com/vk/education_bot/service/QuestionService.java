@@ -21,28 +21,8 @@ public class QuestionService {
         return questionRepository.findByText(text).isPresent();
     }
 
-    public String getAnswer(String text) {
-        return questionRepository.findByText(text)
-            .map(Question::getAnswer)
-            .orElse(null);
-    }
-
-
-    public List<String> getAllQuestions() {
-        return questionRepository.findAll().stream()
-            .map(Question::getText)
-            .toList();
-    }
-
-    // Получить список всех вопросов
-    public List<String> getAllQuestionsText() {
-        return questionRepository.findAll().stream()
-            .map(e -> e.getId() + ". " + e.getText()) // Получаем только текст вопросов
-            .toList();
-    }
-
     public void saveQuestion(String text, String answer) {
-        Question question = new Question();
+        var question = new Question();
         question.setText(text);
         question.setAnswer(answer);
         questionRepository.save(question);

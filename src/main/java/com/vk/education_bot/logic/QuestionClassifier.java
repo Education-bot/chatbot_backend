@@ -29,14 +29,14 @@ public class QuestionClassifier {
         if (isNull(questionText)) {
             return Optional.empty();
         }
-        List<String> questions = questionRepository.findAll().stream()
+        var questions = questionRepository.findAll().stream()
             .map(Question::getText)
             .toList();
         return questionRepository.findByText(iterateQuestionsAndGetMatches(questions, questionText));
     }
 
     public String iterateQuestionsAndGetMatches(List<String> questions, String questionText) {
-        List<String> intermediateResult = new ArrayList<>();
+        var intermediateResult = new ArrayList<String>();
         for (int i = 0; i < questions.size(); i += BATCH_SIZE) {
             intermediateResult.add(getMaxFitPrediction(questions.subList(i, Math.min(questions.size(), i + BATCH_SIZE)), questionText));
         }

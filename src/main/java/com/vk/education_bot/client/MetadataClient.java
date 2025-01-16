@@ -43,11 +43,11 @@ public class MetadataClient {
         connection.setRequestMethod("GET");
         connection.setRequestProperty(METADATA_FLAVOR_HEADER, METADATA_FLAVOR_VALUE);
 
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+        try (var reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
             String inputLine;
             StringBuilder response = new StringBuilder();
 
-            while ((inputLine = in.readLine()) != null) {
+            while ((inputLine = reader.readLine()) != null) {
                 response.append(inputLine);
             }
 
@@ -57,8 +57,8 @@ public class MetadataClient {
 
 
     private void parseTokenResponse(String response) throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode jsonResponse = mapper.readTree(response);
+        var mapper = new ObjectMapper();
+        var jsonResponse = mapper.readTree(response);
 
         token = jsonResponse.get("access_token").asText();
         long expiresIn = jsonResponse.get("expires_in").asLong();

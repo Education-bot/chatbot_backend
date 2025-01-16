@@ -23,20 +23,20 @@ public class AdminService {
     }
 
     public List<Long> getAllAdminIds() {
-        List<Long> list = new ArrayList<>();
-        for (Admin admin : adminRepository.findAll()) {
+        var list = new ArrayList<Long>();
+        for (var admin : adminRepository.findAll()) {
             list.add(admin.getVkId());
         }
         return list;
     }
 
     public void addAdmin(Long userId) {
-        Admin newAdmin = new Admin(userId);
+        var newAdmin = new Admin(userId);
         adminRepository.save(newAdmin);
     }
 
     public void deleteAdmin(Long userId) {
-        Admin admin = adminRepository.findByVkId(userId);
+        var admin = adminRepository.findByVkId(userId);
         adminRepository.delete(admin);
     }
 }
