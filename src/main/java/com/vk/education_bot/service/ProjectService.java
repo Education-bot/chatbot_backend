@@ -1,7 +1,6 @@
 package com.vk.education_bot.service;
 
 import com.vk.education_bot.entity.Project;
-import com.vk.education_bot.entity.Section;
 import com.vk.education_bot.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +14,7 @@ import java.util.List;
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
+
     /**
      * Парсим строку, введённую администратором, в формат:
      *    # Название
@@ -89,7 +89,6 @@ public class ProjectService {
                 case "критерии оценивания" -> project.setGradingCriteria(fieldValue);
                 case "награды" -> project.setBenefits(fieldValue);
                 default -> {
-                    // Неизвестный заголовок - можно залогировать или пропустить
                 }
             }
         }
@@ -108,10 +107,6 @@ public class ProjectService {
         }
     }
 
-    /**
-     * Сохраняет проект в базу. При условии, что Sequence для id уже настроен так,
-     * чтобы новые записи начинались с 53, проблем с заполнением ID не будет.
-     */
     public Project addProject(Project project) {
         return projectRepository.save(project);
     }
@@ -122,18 +117,8 @@ public class ProjectService {
      * 2) Проставляет соответствующую секцию
      * 3) Сохраняет в БД
      */
-    public Project parseAndAddProject(String adminMessage, Section section) {
+    public Project parseAndAddProject(String adminMessage) {
         Project project = parseProjectFromMessage(adminMessage);
-        // Если в сущности Project есть связь с Section (например, поле section_id),
-        // то нужно предусмотреть это поле в Project и установить:
-        //   project.setSection(section);
-        // но в данном коде поля section прямо не видно, поэтому аналогично:
-        //   project.setSectionId(section.getId());
-        // если у Project есть поле sectionId.
-
-        // Пример, если поле в Project называется sectionId:
-        // project.setSectionId(section.getId());
-
         return addProject(project);
     }
 

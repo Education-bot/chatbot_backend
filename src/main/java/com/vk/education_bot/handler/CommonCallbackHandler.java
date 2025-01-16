@@ -427,7 +427,7 @@ public class CommonCallbackHandler extends CallbackApi {
             handleAdminBackAction(context);
             return;
         }
-        projectService.parseAndAddProject(userInput, context.getCurrentSection());
+        projectService.parseAndAddProject(userInput);
         vkClient.sendMessage(context.getUserId(), "Проект добавлен");
         context.setCurrentSection(null);
         handleAdminBackAction(context);
