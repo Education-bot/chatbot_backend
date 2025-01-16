@@ -13,6 +13,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Objects.isNull;
+
 @Component
 @RequiredArgsConstructor
 public class QuestionClassifier {
@@ -24,12 +26,12 @@ public class QuestionClassifier {
 
     // todo optimize and add cache
     public Optional<Question> classifyQuestion(@Nullable String questionText) {
-        if (questionText == null) {
+        if (isNull(questionText)) {
             return Optional.empty();
         }
         List<String> questions = questionRepository.findAll().stream()
-                .map(Question::getText)
-                .toList();
+            .map(Question::getText)
+            .toList();
         return questionRepository.findByText(iterateQuestionsAndGetMatches(questions, questionText));
     }
 
@@ -47,10 +49,10 @@ public class QuestionClassifier {
 
     public String getMaxFitPrediction(List<String> allQuestions, String questionText) {
         return yandexGptClient.classifyQuestion(allQuestions, questionText)
-                .predictions()
-                .stream()
-                .max(Comparator.comparingDouble(QuestionPrediction.Prediction::confidence))
-                .map(QuestionPrediction.Prediction::label)
-                .orElseThrow(() -> new RuntimeException("Label not presented in response"));
+            .predictions()
+            .stream()
+            .max(Comparator.comparingDouble(QuestionPrediction.Prediction::confidence))
+            .map(QuestionPrediction.Prediction::label)
+            .orElseThrow(() -> new RuntimeException("Label not presented in response"));
     }
 }

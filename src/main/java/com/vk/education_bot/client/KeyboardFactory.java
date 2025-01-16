@@ -117,9 +117,9 @@ public class KeyboardFactory {
 
     private static KeyboardButton createButton(String label, KeyboardButtonColor color) {
         return new KeyboardButton()
-                .setAction(new KeyboardButtonActionText()
-                        .setLabel(label)
-                        .setType(KeyboardButtonActionTextType.TEXT))
-                .setColor(color);
+            .setAction(new KeyboardButtonActionText()
+                .setLabel(label)
+                .setType(KeyboardButtonActionTextType.TEXT))
+            .setColor(color);
     }
 }

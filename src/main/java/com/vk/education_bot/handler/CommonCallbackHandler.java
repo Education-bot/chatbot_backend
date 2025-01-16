@@ -26,16 +26,22 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static java.util.Optional.ofNullable;
 
 @Slf4j
 @Component
 public class CommonCallbackHandler extends CallbackApi {
 
     private final static String EMPTY = "";
+
+    // Формат: /admin answer 1, 3, 10, 56, 101 "Текст вопроса" "Текст ответа"
+    private final static Pattern answerPattern = Pattern.compile("^answer\\s+([\\d,\\s]+)\\s+\"([^\"]+)\"\\s+\"([^\"]+)\"$");
+    // Формат: /admin delete 1, 3, 10, 56
+    private final static Pattern deletePattern = Pattern.compile("^delete\\s+([\\d,\\s]+)$");
 
     private final Map<Long, UserContext> userContexts = new ConcurrentHashMap<>();
     private final Map<Long, String> userQuestions = new ConcurrentHashMap<>();
@@ -52,7 +58,7 @@ public class CommonCallbackHandler extends CallbackApi {
     private final QuestionClassifier questionClassifier;
 
     public CommonCallbackHandler(BotProperties botProperties, AdminService adminService, ProjectService projectService, VkClient vkClient, QuestionService questionService, SectionService sectionService, QuestionClassifier questionClassifier, UnknownQuestionService unknownQuestionService, YandexGptClient yandexGptClient) {
-        super(botProperties.confirmationCode());
+        super(vkClient.getConfirmationCode());
         this.adminService = adminService;
         this.projectService = projectService;
         this.vkClient = vkClient;
@@ -66,14 +72,18 @@ public class CommonCallbackHandler extends CallbackApi {
 
     @Override
     public void messageNew(Integer groupId, MessageNew message) {
-        long userId = Optional.ofNullable(message
-                        .getObject()
-                        .getMessage()
-                        .getFromId())
-                .orElseThrow(() -> new RuntimeException("UserId not presented"));
+        long userId = ofNullable(message
+            .getObject()
+            .getMessage()
+            .getFromId())
+            .orElseThrow(() -> new RuntimeException("UserId not presented"));
         // Сообщение от пользователя
-        String userInput = Optional.ofNullable(message.getObject().getMessage().getText()).orElse("");
-        System.out.println("ПОЛУЧЕНО: " + userInput);
+        String userInput = ofNullable(message.getObject()
+            .getMessage()
+            .getText())
+            .orElse("");
+        log.info("ПОЛУЧЕНО: {}", userInput);
+
         UserContext context = userContexts.computeIfAbsent(userId, UserContext::new);
 
         if ("Назад".equalsIgnoreCase(userInput) || "Начать".equalsIgnoreCase(userInput)) {
@@ -134,9 +144,9 @@ public class CommonCallbackHandler extends CallbackApi {
         long userId = context.getUserId();
         try {
             Section section = sectionService.getAllSections().stream()
-                    .filter(s -> s.getName().equalsIgnoreCase(userInput))
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException("Section not found"));
+                .filter(s -> s.getName().equalsIgnoreCase(userInput))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Section not found"));
 
             context.setCurrentSection(section);
 
@@ -160,9 +170,9 @@ public class CommonCallbackHandler extends CallbackApi {
             int projectId = Integer.parseInt(userInput);
 
             Project project = context.getCurrentSection().getProjects().stream()
-                    .filter(p -> p.getId() == projectId)
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException("Project not found"));
+                .filter(p -> p.getId() == projectId)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Project not found"));
 
             context.setCurrentProject(project);
 
@@ -181,48 +191,48 @@ public class CommonCallbackHandler extends CallbackApi {
         Project project = context.getCurrentProject();
 
         String prompt = String.format(
-                """
-                        Ответь на вопрос, используя информацию о проекте:
-                        Название: %s
-                        Направление: %s
-                        Для чего подойдет: %s
-                        Минимальное количество участников: %d
-                        Максимальное количество участников: %d
-                        Цель проекта: %s
-                        Описание: %s
-                        Материалы: %s
-                        Продающее описание: %s
-                        Алгоритм: %s
-                        Необходимые компетенции: %s
-                        Рекомендации: %s
-                        Сложность: %s
-                        Формат обучения: %s
-                        Трудозатратность: %s
-                        Условия получения сертификата: %s
-                        Ожидаемый результат: %s
-                        Критерии оценки: %s
-                        Преимущества: %s
-                        Вопрос по проекту: %s""",
-                project.getName(),
-                project.getDirection(),
-                project.getType(),
-                project.getMinMembers() != null ? project.getMinMembers() : 0,
-                project.getMaxMembers() != null ? project.getMaxMembers() : 0,
-                project.getGoal() != null ? project.getGoal() : "Не указано",
-                project.getDescription() != null ? project.getDescription() : "Не указано",
-                project.getMaterials() != null ? project.getMaterials() : "Не указаны",
-                project.getSellingDescription() != null ? project.getSellingDescription() : "Не указано",
-                project.getAlgorithm() != null ? project.getAlgorithm() : "Не указан",
-                project.getCompetencies() != null ? project.getCompetencies() : "Не указаны",
-                project.getRecommendations() != null ? project.getRecommendations() : "Не указаны",
-                project.getComplexity() != null ? project.getComplexity() : "Не указана",
-                project.getStudyFormat() != null ? project.getStudyFormat() : "Не указан",
-                project.getIntense() != null ? project.getIntense() : "Не указана",
-                project.getCertificateConditions() != null ? project.getCertificateConditions() : "Не указаны",
-                project.getExpectedResult() != null ? project.getExpectedResult() : "Не указан",
-                project.getGradingCriteria() != null ? project.getGradingCriteria() : "Не указаны",
-                project.getBenefits() != null ? project.getBenefits() : "Не указаны",
-                userInput
+            """
+                Ответь на вопрос, используя информацию о проекте:
+                Название: %s
+                Направление: %s
+                Для чего подойдет: %s
+                Минимальное количество участников: %d
+                Максимальное количество участников: %d
+                Цель проекта: %s
+                Описание: %s
+                Материалы: %s
+                Продающее описание: %s
+                Алгоритм: %s
+                Необходимые компетенции: %s
+                Рекомендации: %s
+                Сложность: %s
+                Формат обучения: %s
+                Трудозатратность: %s
+                Условия получения сертификата: %s
+                Ожидаемый результат: %s
+                Критерии оценки: %s
+                Преимущества: %s
+                Вопрос по проекту: %s""",
+            project.getName(),
+            project.getDirection(),
+            project.getType(),
+            project.getMinMembers() != null ? project.getMinMembers() : 0,
+            project.getMaxMembers() != null ? project.getMaxMembers() : 0,
+            project.getGoal() != null ? project.getGoal() : "Не указано",
+            project.getDescription() != null ? project.getDescription() : "Не указано",
+            project.getMaterials() != null ? project.getMaterials() : "Не указаны",
+            project.getSellingDescription() != null ? project.getSellingDescription() : "Не указано",
+            project.getAlgorithm() != null ? project.getAlgorithm() : "Не указан",
+            project.getCompetencies() != null ? project.getCompetencies() : "Не указаны",
+            project.getRecommendations() != null ? project.getRecommendations() : "Не указаны",
+            project.getComplexity() != null ? project.getComplexity() : "Не указана",
+            project.getStudyFormat() != null ? project.getStudyFormat() : "Не указан",
+            project.getIntense() != null ? project.getIntense() : "Не указана",
+            project.getCertificateConditions() != null ? project.getCertificateConditions() : "Не указаны",
+            project.getExpectedResult() != null ? project.getExpectedResult() : "Не указан",
+            project.getGradingCriteria() != null ? project.getGradingCriteria() : "Не указаны",
+            project.getBenefits() != null ? project.getBenefits() : "Не указаны",
+            userInput
         );
 
         String response = yandexGptClient.generateAnswer(prompt, YandexGptClient.GptTaskDescription.ANSWER_ABOUT_PROJECT);
@@ -534,8 +544,8 @@ public class CommonCallbackHandler extends CallbackApi {
             StringBuilder sb = new StringBuilder("Список неизвестных вопросов:\n");
             for (UnknownQuestion uq : unknownQuestions) {
                 sb.append("ID: ").append(uq.getId())
-                        .append(", Вопрос: ").append(uq.getQuestionText())
-                        .append("\n");
+                    .append(", Вопрос: ").append(uq.getQuestionText())
+                    .append("\n");
             }
             vkClient.sendMessage(userId, sb.toString());
         }
@@ -639,12 +649,14 @@ public class CommonCallbackHandler extends CallbackApi {
     @Override
     public String parse(String json) {
         // Разбор входящего JSON и обработка событий
-        CallbackMessage callbackMessage = new GsonHolder().getGson().fromJson(json, CallbackMessage.class);
+        CallbackMessage callbackMessage = new GsonHolder()
+            .getGson()
+            .fromJson(json, CallbackMessage.class);
 
         System.out.println(callbackMessage.toString());
 
         if (callbackMessage.getType() == null) {
-            return "";
+            return EMPTY;
         }
 
         if (!Events.CONFIRMATION.equals(callbackMessage.getType())) {
@@ -652,7 +664,7 @@ public class CommonCallbackHandler extends CallbackApi {
         }
 
         if (botProperties.groupId() == callbackMessage.getGroupId()) {
-            return botProperties.confirmationCode();
+            return vkClient.getConfirmationCode();
         }
         return EMPTY;
     }

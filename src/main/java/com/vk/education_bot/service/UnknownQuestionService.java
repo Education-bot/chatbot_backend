@@ -35,7 +35,7 @@ public class UnknownQuestionService {
 
     public void deleteByQuestionText(String questionText) {
         unknownQuestionRepository.findByQuestionText(questionText)
-                .ifPresent(unknownQuestionRepository::delete);
+            .ifPresent(unknownQuestionRepository::delete);
     }
 
     public List<UnknownQuestion> findAllByIds(List<Long> ids) {

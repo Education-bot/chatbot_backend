@@ -3,28 +3,28 @@ package com.vk.education_bot.dto.question;
 import java.util.List;
 
 public record ProjectQuestionGptResponse(
-        Result result
+    Result result
 ) {
     public record Result(
-            List<Alternative> alternatives,
-            Usage usage,
-            String modelVersion
+        List<Alternative> alternatives,
+        Usage usage,
+        String modelVersion
     ) {
         public record Alternative(
-                Message message,
-                String status
+            Message message,
+            String status
         ) {
             public record Message(
-                    String role,
-                    String text
+                String role,
+                String text
             ) {
             }
         }
 
         public record Usage(
-                int inputTextTokens,
-                int completionTokens,
-                int totalTokens
+            int inputTextTokens,
+            int completionTokens,
+            int totalTokens
         ) {
         }
     }

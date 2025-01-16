@@ -5,6 +5,7 @@ import com.vk.api.sdk.client.actors.GroupActor;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
 import com.vk.api.sdk.objects.messages.Keyboard;
+import com.vk.education_bot.configuration.BotProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,7 @@ public class VkClient {
 
     private final VkApiClient vkApiClient;
     private final GroupActor groupActor;
+    private final BotProperties botProperties;
 
     // example
     public void sendMessage(long userId, String message) {
@@ -48,6 +50,19 @@ public class VkClient {
         } catch (ApiException | ClientException e) {
             log.error("Error sending message with keyboard to user {}", userId, e);
         }
+    }
+
+    public String getConfirmationCode() {
+        var code = botProperties.confirmationCode();
+        try {
+            code = vkApiClient.groups()
+                .getCallbackConfirmationCode(groupActor, botProperties.groupId())
+                .execute()
+                .getCode();
+        } catch (ApiException | ClientException e) {
+            log.error("Error getting group confirmation code", e);
+        }
+        return code;
     }
 
 }
