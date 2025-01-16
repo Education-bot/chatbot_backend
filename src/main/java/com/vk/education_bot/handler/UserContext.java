@@ -14,10 +14,12 @@ class UserContext {
     private UserState state = UserState.MAIN_MENU;
     private Section currentSection;
     private Project currentProject;
+    private Project adminCurrentProject;
 
     public void reset() {
         state = UserState.MAIN_MENU;
         currentSection = null;
         currentProject = null;
+        adminCurrentProject = null;
     }
 }

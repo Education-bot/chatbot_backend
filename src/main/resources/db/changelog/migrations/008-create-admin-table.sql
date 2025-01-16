@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS admin
+(
+    id            BIGSERIAL NOT NULL PRIMARY KEY,
+    vk_id         BIGINT    NOT NULL UNIQUE
+);
