@@ -66,9 +66,8 @@ public class KeyboardFactory {
         List<List<KeyboardButton>> allButtons = new ArrayList<>();
         List<KeyboardButton> row = new ArrayList<>();
 
-        row.add(createButton("Да", KeyboardButtonColor.POSITIVE));
         row.add(createButton("Нет", KeyboardButtonColor.NEGATIVE));
-
+        row.add(createButton("Да", KeyboardButtonColor.POSITIVE));
         allButtons.add(row);
 
         allButtons.add(List.of(createButton("Назад", KeyboardButtonColor.NEGATIVE)));
